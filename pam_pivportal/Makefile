@@ -15,15 +15,10 @@ $(TARGET): $(TARGET).o
 	$(LD) $(LFLAGS) -o $(TARGET).so $(TARGET).o
 
 install:
-	sudo cp -f $(TARGET).so /usr/lib64/security/
-	sudo chown root:root /usr/lib64/security/$(TARGET).so
-	sudo chmod 755 /usr/lib64/security/$(TARGET).so
+	sudo cp -f $(TARGET).so /usr/lib64/security/ && chown root:root /usr/lib64/security/$(TARGET).so && chmod 755 /usr/lib64/security/$(TARGET).so
 
 test:
-	$(CC) -o $(TARGET)_test $(TARGET)_test.c -lpam -lpam_misc -lcurl
-	./$(TARGET)_test
+	$(CC) -o $(TARGET)_test $(TARGET)_test.c -lpam -lpam_misc -lcurl && ./$(TARGET)_test "$(logname)"
 
 clean:
-	rm -f $(TARGET).o
-	rm -f $(TARGET)_test
-	rm -f $(TARGET).so
+	rm -f $(TARGET).o $(TARGET)_test $(TARGET).so
