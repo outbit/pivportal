@@ -122,10 +122,12 @@ def request_status():
             if item["authorized"] == True:
                 # Success
                 #return Response(response=json.dumps({"response": "success"}), status=200, mimetype="application/json")
+                del auth_requests[count]
                 return "success"
             else:
                 # Delete auth_request, it failed anyway
                 del auth_requests[count]
+            break
         count += 1
 
     return Response(response=json.dumps({"response": "Authentication Failure"}), status=401, mimetype="application/json")
