@@ -41,6 +41,7 @@ def is_duplicate_register(username, requestid, client_ip):
 
 @app.route('/api/rest/request/list', methods = ['POST'])
 def request_list():
+    # s_dn = request.environ.get('HTTP_SSL_CLIENT_S_DN')
     # TODO verify request was from the user authed connection
     indata = request.get_json()
 

@@ -53,9 +53,9 @@ int register_pivportal(const char *username, const char *requestid, const char *
   // Debug stuff
   /*
   char teststr[255] = {}; // DEBUG
+  */
   char teststr_error[255] = {}; // DEBUG
   memset(teststr_error, 0, sizeof(teststr_error));
-  */
 
   // Build Post
   memset(post_fields, 0, sizeof(post_fields));
@@ -74,7 +74,7 @@ int register_pivportal(const char *username, const char *requestid, const char *
       //curl_easy_setopt(curl, CURLOPT_SSL_VERIFYSTATUS, verifyHost);
       curl_easy_setopt(curl, CURLOPT_POSTFIELDS, post_fields);
       curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_curl_data);
-      //curl_easy_setopt ( curl, CURLOPT_ERRORBUFFER, teststr_error );  // DEBUG
+      curl_easy_setopt ( curl, CURLOPT_ERRORBUFFER, teststr_error );  // DEBUG
  
       res = curl_easy_perform(curl);
 
@@ -85,8 +85,8 @@ int register_pivportal(const char *username, const char *requestid, const char *
       memset(teststr, 0, sizeof(teststr));
       snprintf(teststr, sizeof(teststr), "DEBUG: ret=%d, status_code=%Ld\n", ret, status_code);
       fputs(teststr, stderr);
-      fputs(teststr_error, stderr);
       */
+      fputs(teststr_error, stderr);
       // END DEBUG
 
       if ( /*ret != CURLE_OK || */status_code != 200 ) { // TODO: the ret value is 1 for some reason, thats bad
@@ -172,7 +172,7 @@ PAM_EXTERN int pam_sm_authenticate( pam_handle_t *pamh, int flags,int argc, cons
 
     // TODO: url should be loaded from a config file
     // TODO: Should verify host, notice it ends with a 0, it should be a 1. Should be configurable from file.
-    retval = register_pivportal(pUsername, requestid, "https://192.168.0.103/api/client/request/register", 0);
+    retval = register_pivportal(pUsername, requestid, "https://192.168.0.103:442/api/client/request/register", 0);
 
     if (retval != 0) {
         return PAM_AUTH_ERR;
@@ -188,7 +188,7 @@ PAM_EXTERN int pam_sm_authenticate( pam_handle_t *pamh, int flags,int argc, cons
     printf("\n");
 
     // Verify User Authed
-    retval = status_pivportal(pUsername, requestid, "https://192.168.0.103/api/client/request/status", 0);
+    retval = status_pivportal(pUsername, requestid, "https://192.168.0.103:442/api/client/request/status", 0);
 
     if (retval != 0) {
         return PAM_AUTH_ERR;
