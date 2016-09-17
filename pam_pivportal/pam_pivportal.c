@@ -13,6 +13,7 @@ int authenticate_pivportal(const char *url, char *username)
   CURL *curl;
   CURLcode res;
   char post_fields[255] = {};
+  int ret = 0;
 
   // Build Post
   memset(post_fields, 0, sizeof(post_fields));
@@ -29,7 +30,7 @@ int authenticate_pivportal(const char *url, char *username)
       res = curl_easy_perform(curl);
 
       if (res != CURLE_OK) {
-          return 1;
+          ret = 1;
       }
  
       curl_easy_cleanup(curl);
@@ -37,7 +38,7 @@ int authenticate_pivportal(const char *url, char *username)
 
   curl_global_cleanup();
 
-  return 0;
+  return ret;
 }
 
 
