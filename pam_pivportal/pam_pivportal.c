@@ -41,7 +41,7 @@ char *randstring(size_t length) {
 }
 
 
-int register_pivportal(const char *username, const char *requestid, const char *url)
+int register_pivportal(const char *username, const char *requestid, const char *url, long verifyHost)
 {
   CURL *curl;
   CURLcode res;
@@ -49,8 +49,13 @@ int register_pivportal(const char *username, const char *requestid, const char *
   int ret = 1;
   long status_code = 401;
   int retval = 0;
+
+  // Debug stuff
+  /*
   char teststr[255] = {}; // DEBUG
   char teststr_error[255] = {}; // DEBUG
+  memset(teststr_error, 0, sizeof(teststr_error));
+  */
 
   // Build Post
   memset(post_fields, 0, sizeof(post_fields));
@@ -63,6 +68,10 @@ int register_pivportal(const char *username, const char *requestid, const char *
   if (curl) {
       curl_easy_setopt(curl, CURLOPT_URL, url);
       curl_easy_setopt(curl, CURLOPT_POST, 1);
+      curl_easy_setopt(curl, CURLOPT_USE_SSL, 1);
+      curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, verifyHost);
+      curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, verifyHost);
+      //curl_easy_setopt(curl, CURLOPT_SSL_VERIFYSTATUS, verifyHost);
       curl_easy_setopt(curl, CURLOPT_POSTFIELDS, post_fields);
       curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_curl_data);
       //curl_easy_setopt ( curl, CURLOPT_ERRORBUFFER, teststr_error );  // DEBUG
@@ -74,7 +83,6 @@ int register_pivportal(const char *username, const char *requestid, const char *
       // DEBUG
       /*
       memset(teststr, 0, sizeof(teststr));
-      memset(teststr_error, 0, sizeof(teststr_error));
       snprintf(teststr, sizeof(teststr), "DEBUG: ret=%d, status_code=%Ld\n", ret, status_code);
       fputs(teststr, stderr);
       fputs(teststr_error, stderr);
@@ -94,7 +102,7 @@ int register_pivportal(const char *username, const char *requestid, const char *
 }
 
 
-int status_pivportal(const char *username, const char *requestid, const char *url)
+int status_pivportal(const char *username, const char *requestid, const char *url, long verifyHost)
 {
   CURL *curl;
   CURLcode res;
@@ -114,6 +122,10 @@ int status_pivportal(const char *username, const char *requestid, const char *ur
   if (curl) {
       curl_easy_setopt(curl, CURLOPT_URL, url);
       curl_easy_setopt(curl, CURLOPT_POST, 1);
+      curl_easy_setopt(curl, CURLOPT_USE_SSL, 1);
+      curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, verifyHost);
+      curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, verifyHost);
+      //curl_easy_setopt(curl, CURLOPT_SSL_VERIFYSTATUS, verifyHost);
       curl_easy_setopt(curl, CURLOPT_POSTFIELDS, post_fields);
       curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_curl_data);
  
@@ -159,9 +171,8 @@ PAM_EXTERN int pam_sm_authenticate( pam_handle_t *pamh, int flags,int argc, cons
     }
 
     // TODO: url should be loaded from a config file
-    // TODO: http for testing, https later
-    // Register a unique Auth request
-    retval = register_pivportal(pUsername, requestid, "http://192.168.0.103/api/client/request/register");
+    // TODO: Should verify host, notice it ends with a 0, it should be a 1. Should be configurable from file.
+    retval = register_pivportal(pUsername, requestid, "https://192.168.0.103/api/client/request/register", 0);
 
     if (retval != 0) {
         return PAM_AUTH_ERR;
@@ -177,7 +188,7 @@ PAM_EXTERN int pam_sm_authenticate( pam_handle_t *pamh, int flags,int argc, cons
     printf("\n");
 
     // Verify User Authed
-    retval = status_pivportal(pUsername, requestid, "http://192.168.0.103/api/client/request/status");
+    retval = status_pivportal(pUsername, requestid, "https://192.168.0.103/api/client/request/status", 0);
 
     if (retval != 0) {
         return PAM_AUTH_ERR;
