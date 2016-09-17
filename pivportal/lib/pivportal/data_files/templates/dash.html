@@ -1,0 +1,19 @@
+<div id="actions">
+    <h2>Actions</h2>
+    <table id="actionlist">
+        <tr>
+            <th>Action</th>
+            <th>Description</th>
+            <th>Run Action</th>
+        </tr>
+        <tr ng-repeat="item in actions| filter: builtinActionsFilter">
+            <td>
+                {{item.category.replace('/','')}}/{{item.action}}
+            </td>
+            <td>
+                {{item.desc}}
+            </td>
+            <td><a ng-click="runJob(item.category, item.action)" href="">GO!</a></td>
+        </tr>
+    </table>
+</div>

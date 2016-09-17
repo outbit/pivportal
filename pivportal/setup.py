@@ -40,5 +40,5 @@ setup(name='pivportal',
       scripts=[
          'bin/pivportal',
       ],
-      data_files=[],
+      package_data={"": ["data_files/pivportal/*", "data_files/pivportal/css/*", "data_files/pivportal/imgs/*", "data_files/pivportal/js/*", "data_files/pivportal/templates/*"]},
 )

@@ -1,0 +1,99 @@
+div {
+    text-align: left;
+    color: #000001;
+    font-size: 16;
+    font-family: "Myriad Pro", "Helvetica", "Arial", sans-serif;
+}
+
+table, th, td, tr {
+    border: 1px solid white;
+    text-align: left;
+    padding: 5px;
+    border-collapse: collapse;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+#header #logo {
+    display: inline-block;
+    float: left;
+    font-size: 32px;
+    color: #EEEEEE;
+    padding-left: 10px;
+    padding-top: 5px;
+}
+
+#header #nav img {
+    height: 25px;
+}
+
+#header #nav #action{
+    height: 27px;
+}
+
+#header #nav #gear{
+    height: 25px;
+}
+
+#header #nav a, p a:visited, p a:hover, p a:active, p a:link {
+    color: #EE7325;
+    text-decoration: none;
+}
+
+#header #nav {
+    display: inline-block;
+    float: right;
+    margin-top: 10px;
+    padding-right: 10px;
+}
+
+#header {
+    background-color: #4B586B;
+    text-align: left;
+    width: 100%;
+    height: 44px;
+    font-family: "Archivo Narrow", "Comic Sans MS", cursive, sans-serif;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 100;
+}
+
+#jobs {
+    padding-bottom: 90px; // Add Space at the bottom of the jobs list
+}
+#actions {
+    padding-bottom: 90px; // Add Space at the bottom of the actions list
+}
+
+#content {
+    background-color: #E2DEE4;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    overflow: scroll;
+    top: 44px;
+    left: 0;
+    z-index: 102;
+    padding: 20px 50px 20px 50px;
+}
+
+#footer hr {
+    width: 80%;
+    padding-top: 0px;
+    margin-top: 0px;
+}
+
+#footer {
+    background-color: #E2DEE4;
+    width: 100%;
+    height: 32px;
+    font-size: 12px;
+    text-align: center;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    z-index: 103;
+}
