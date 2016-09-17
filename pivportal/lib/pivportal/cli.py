@@ -44,10 +44,34 @@ def request_list():
     username = str(request.form['username'])
     print("verify request was from the user authed connection")
 
+    if not username_is_valid(username):
+        return Response(response=json.dumps({"response": "  invalid request"}), status=400, mimetype="application/json")
+
     request_list = []
     for item in auth_requests:
         if item["username"] == username:
             request_list.append(item)
+
+    return Response(response=json.dumps(request_list), status=200, mimetype="application/json")
+
+
+@app.route('/api/request/auth', methods = ['POST'])
+def request_auth():
+    username = str(request.form['username'])
+    requestid = str(request.form['requestid'])
+    clientip = str(request.form['clientip'])
+    print("verify request was from the user authed connection")
+
+    if not username_is_valid(username) or not requestid_is_valid(requestid) or not ip_is_valid(clientip):
+        return Response(response=json.dumps({"response": "  invalid request"}), status=400, mimetype="application/json")
+
+    # Authenticate Request
+    count = 0
+    for item in auth_requests:
+        if item["username"] == username and item["requestid"] == requestid and item["client_ip"] == clientip:
+            if item["authorized"] == False:
+                auth_requests[count]["authorized"] = True
+        count += 1
 
     return Response(response=json.dumps(request_list), status=200, mimetype="application/json")
 
