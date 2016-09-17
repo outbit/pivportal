@@ -58,7 +58,6 @@ int register_pivportal(const char *username, const char *requestid, const char *
       curl_easy_setopt(curl, CURLOPT_URL, url);
       curl_easy_setopt(curl, CURLOPT_POST, 1);
       curl_easy_setopt(curl, CURLOPT_POSTFIELDS, post_fields);
-      //curl_easy_setopt(curl, CURLOPT_NOBODY,1); // Do not print errors
       //curl_easy_setopt ( curl, CURLOPT_ERRORBUFFER, teststr_error );  // DEBUG
  
       res = curl_easy_perform(curl);
@@ -109,7 +108,6 @@ int status_pivportal(const char *username, const char *requestid, const char *ur
       curl_easy_setopt(curl, CURLOPT_URL, url);
       curl_easy_setopt(curl, CURLOPT_POST, 1);
       curl_easy_setopt(curl, CURLOPT_POSTFIELDS, post_fields);
-      //curl_easy_setopt(curl, CURLOPT_NOBODY,1); // Do not print errors
  
       res = curl_easy_perform(curl);
 

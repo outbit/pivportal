@@ -31,9 +31,9 @@ def ip_is_valid(ip):
     return False
 
 
-def is_duplicate_register(username, requestid, clientip):
+def is_duplicate_register(username, requestid, client_ip):
     for item in auth_requests:
-        if item["username"] == username and item["requestid"] == requestid and item["client_ip"] == clientip:
+        if item["username"] == username and item["requestid"] == requestid and item["client_ip"] == client_ip:
             # Request Is Already Registered
             return True
     return False
@@ -41,7 +41,13 @@ def is_duplicate_register(username, requestid, clientip):
 
 @app.route('/api/request/list', methods = ['POST'])
 def request_list():
-    username = str(request.form['username'])
+    # TODO verify request was from the user authed connection
+    indata = request.get_json()
+
+    if "username" not in indata:
+        return Response(response=json.dumps({"response": "  invalid request"}), status=400, mimetype="application/json")
+
+    username = indata["username"]
     print("verify request was from the user authed connection")
 
     if not username_is_valid(username):
@@ -57,40 +63,45 @@ def request_list():
 
 @app.route('/api/request/auth', methods = ['POST'])
 def request_auth():
-    username = str(request.form['username'])
-    requestid = str(request.form['requestid'])
-    clientip = str(request.form['clientip'])
-    print("verify request was from the user authed connection")
+    # TODO verify request was from the user authed connection
+    indata = request.get_json()
 
-    if not username_is_valid(username) or not requestid_is_valid(requestid) or not ip_is_valid(clientip):
+    if "username" not in indata or "requestid" not in indata or "client_ip" not in indata or "authorized" not in indata:
+        return Response(response=json.dumps({"response": "  invalid request"}), status=400, mimetype="application/json")
+
+    username = indata['username']
+    requestid = indata['requestid']
+    client_ip = indata['client_ip']
+    authorized = indata['authorized']
+
+    if not username_is_valid(username) or not requestid_is_valid(requestid) or not ip_is_valid(client_ip):
         return Response(response=json.dumps({"response": "  invalid request"}), status=400, mimetype="application/json")
 
     # Authenticate Request
     count = 0
     for item in auth_requests:
-        if item["username"] == username and item["requestid"] == requestid and item["client_ip"] == clientip:
-            if item["authorized"] == False:
+        if item["username"] == username and item["requestid"] == requestid and item["client_ip"] == client_ip:
+            if item["authorized"] == False and authorized == True:
                 auth_requests[count]["authorized"] = True
         count += 1
 
-    return Response(response=json.dumps(request_list), status=200, mimetype="application/json")
+    #return Response(response=json.dumps({"response": "success"}), status=200, mimetype="application/json")
+    return "success"
 
 
 @app.route('/api/request/register', methods = ['POST'])
 def request_register():
     username = str(request.form['username'])
     requestid = str(request.form['requestid'])
-    clientip = request.remote_addr
-    print(username)
-    print(requestid)
+    client_ip = request.remote_addr
 
-    if not username_is_valid(username) or not requestid_is_valid(requestid) or not ip_is_valid(clientip):
+    if not username_is_valid(username) or not requestid_is_valid(requestid) or not ip_is_valid(client_ip):
         return Response(response=json.dumps({"response": "  invalid request"}), status=400, mimetype="application/json")
 
-    if is_duplicate_register(username, requestid, clientip):
+    if is_duplicate_register(username, requestid, client_ip):
         return Response(response=json.dumps({"response": "  invalid request"}), status=400, mimetype="application/json")
 
-    auth_requests.append({"username": username, "requestid": requestid, "client_ip": clientip, "authorized": False})
+    auth_requests.append({"username": username, "requestid": requestid, "client_ip": client_ip, "authorized": False})
 
     #return Response(response=json.dumps({"response": "success"}), status=200, mimetype="application/json")
     return "success"
@@ -100,19 +111,22 @@ def request_register():
 def request_status():
     username = str(request.form['username'])
     requestid = str(request.form['requestid'])
-    clientip = request.remote_addr
-    print(username)
-    print(requestid)
+    client_ip = request.remote_addr
 
-    if username_is_valid(username) and requestid_is_valid(requestid) and ip_is_valid(clientip):
+    if not username_is_valid(username) or not requestid_is_valid(requestid) or not ip_is_valid(client_ip):
         return Response(response=json.dumps({"response": "  invalid request"}), status=400, mimetype="application/json")
 
+    count = 0
     for item in auth_requests:
-        if item["username"] == username and item["requestid"] == requestid and item["client_ip"] == clientip:
+        if item["username"] == username and item["requestid"] == requestid and item["client_ip"] == client_ip:
             if item["authorized"] == True:
                 # Success
                 #return Response(response=json.dumps({"response": "success"}), status=200, mimetype="application/json")
                 return "success"
+            else:
+                # Delete auth_request, it failed anyway
+                del auth_requests[count]
+        count += 1
 
     return Response(response=json.dumps({"response": "Authentication Failure"}), status=401, mimetype="application/json")
 

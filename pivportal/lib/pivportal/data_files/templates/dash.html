@@ -1,19 +1,26 @@
 <div id="actions">
-    <h2>Actions</h2>
-    <table id="actionlist">
+    <h2>Authentication Requests</h2>
+    <table id="auth_request_list">
         <tr>
-            <th>Action</th>
-            <th>Description</th>
-            <th>Run Action</th>
+            <th>username</th>
+            <th>IP</th>
+            <th>RequestID</th>
+            <th>Authorize Yes/No</th>
         </tr>
-        <tr ng-repeat="item in actions| filter: builtinActionsFilter">
+        <tr ng-repeat="item in auth_requests track by item.requestid">
             <td>
-                {{item.category.replace('/','')}}/{{item.action}}
+                {{item.username}}
             </td>
             <td>
-                {{item.desc}}
+                {{item.client_ip}}
             </td>
-            <td><a ng-click="runJob(item.category, item.action)" href="">GO!</a></td>
+            <td>
+                {{item.requestid}}
+            </td>
+            <td>
+                <a ng-click="authorize_request(item.username, item.requestid, item.client_ip, true)" href="">yes!</a> /
+                <a ng-click="authorize_request(item.username, item.requestid, item.client_ip, false)" href="">no!</a>
+            </td>
         </tr>
     </table>
 </div>
