@@ -1,3 +1,6 @@
+# C/C++  Ignores
+=================
+
 # Object files
 *.o
 *.ko
@@ -31,3 +34,10 @@
 # Debug files
 *.dSYM/
 *.su
+
+# Python Ignores
+=================
+*.pyc
+*.egg-info
+*.tar.gz
+*.coverage
