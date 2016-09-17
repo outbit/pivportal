@@ -8,11 +8,11 @@
 #include <curl/curl.h>
  
 
-int authenticate_pivportal(char *url, char *username)
+int authenticate_pivportal(const char *url, char *username)
 {
   CURL *curl;
   CURLcode res;
-  char post_fields[255] = {}
+  char post_fields[255] = {};
 
   // Build Post
   memset(post_fields, 0, sizeof(post_fields));
