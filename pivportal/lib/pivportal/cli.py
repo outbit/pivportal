@@ -3,6 +3,8 @@ import optparse
 from flask import Flask, Response, request
 from random import choice
 from string import ascii_uppercase
+import re
+import json
 
 
 app = Flask(__name__)
@@ -11,27 +13,63 @@ app = Flask(__name__)
 auth_requests = []
 
 
+def username_is_valid(username):
+    if re.match(r'^[a-zA-Z0-9_\-]+$', username):
+        return True
+    return False
+
+
+def requestid_is_valid(requestid):
+    if re.match(r'^[a-zA-Z0-9]+$', requestid) and len(requestid) == 16:
+        return True
+    return False
+
+
+def ip_is_valid(ip):
+    if re.match(r'^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$', ip):
+        return True
+    return False
+
+
+def is_duplicate_register(username, requestid, clientip):
+    for item in auth_requests:
+        if item["username"] == username and item["requestid"] == requestid and item["client_ip"] == clientip:
+            # Request Is Already Registered
+            return True
+    return False
+
+
 @app.route('/api/request/list', methods = ['POST'])
 def request_list():
     username = str(request.form['username'])
     print("verify request was from the user authed connection")
 
-    return str(requestid)
+    request_list = []
+    for item in auth_requests:
+        if item["username"] == username:
+            request_list.append(item)
+
+    return Response(response=json.dumps(request_list), status=200, mimetype="application/json")
 
 
 @app.route('/api/request/register', methods = ['POST'])
 def request_register():
     username = str(request.form['username'])
-    requestid = ''.join(choice(ascii_uppercase) for i in range(16))
+    requestid = str(request.form['requestid'])
     clientip = request.remote_addr
     print(username)
     print(requestid)
 
-    # Verify username is safe!!!
+    if not username_is_valid(username) or not requestid_is_valid(requestid) or not ip_is_valid(clientip):
+        return Response(response=json.dumps({"response": "  invalid request"}), status=400, mimetype="application/json")
+
+    if is_duplicate_register(username, requestid, clientip):
+        return Response(response=json.dumps({"response": "  invalid request"}), status=400, mimetype="application/json")
 
     auth_requests.append({"username": username, "requestid": requestid, "client_ip": clientip, "authorized": False})
 
-    return str(requestid)
+    #return Response(response=json.dumps({"response": "success"}), status=200, mimetype="application/json")
+    return "success"
 
 
 @app.route('/api/request/status', methods = ['POST'])
@@ -42,15 +80,17 @@ def request_status():
     print(username)
     print(requestid)
 
-    # Verify username and requestid is SAFE!!!
+    if username_is_valid(username) and requestid_is_valid(requestid) and ip_is_valid(clientip):
+        return Response(response=json.dumps({"response": "  invalid request"}), status=400, mimetype="application/json")
 
     for item in auth_requests:
         if item["username"] == username and item["requestid"] == requestid and item["client_ip"] == clientip:
             if item["authorized"] == True:
                 # Success
-                pass
+                #return Response(response=json.dumps({"response": "success"}), status=200, mimetype="application/json")
+                return "success"
 
-    return str(requestid)
+    return Response(response=json.dumps({"response": "Authentication Failure"}), status=401, mimetype="application/json")
 
 
 class Cli(object):
