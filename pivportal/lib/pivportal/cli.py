@@ -39,7 +39,7 @@ def is_duplicate_register(username, requestid, client_ip):
     return False
 
 
-@app.route('/api/request/list', methods = ['POST'])
+@app.route('/api/rest/request/list', methods = ['POST'])
 def request_list():
     # TODO verify request was from the user authed connection
     indata = request.get_json()
@@ -48,7 +48,6 @@ def request_list():
         return Response(response=json.dumps({"response": "  invalid request"}), status=400, mimetype="application/json")
 
     username = indata["username"]
-    print("verify request was from the user authed connection")
 
     if not username_is_valid(username):
         return Response(response=json.dumps({"response": "  invalid request"}), status=400, mimetype="application/json")
@@ -61,7 +60,7 @@ def request_list():
     return Response(response=json.dumps(request_list), status=200, mimetype="application/json")
 
 
-@app.route('/api/request/auth', methods = ['POST'])
+@app.route('/api/rest/request/auth', methods = ['POST'])
 def request_auth():
     # TODO verify request was from the user authed connection
     indata = request.get_json()
@@ -89,7 +88,7 @@ def request_auth():
     return "success"
 
 
-@app.route('/api/request/register', methods = ['POST'])
+@app.route('/api/client/request/register', methods = ['POST'])
 def request_register():
     username = str(request.form['username'])
     requestid = str(request.form['requestid'])
@@ -107,7 +106,7 @@ def request_register():
     return "success"
 
 
-@app.route('/api/request/status', methods = ['POST'])
+@app.route('/api/client/request/status', methods = ['POST'])
 def request_status():
     username = str(request.form['username'])
     requestid = str(request.form['requestid'])

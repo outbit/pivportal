@@ -8,6 +8,12 @@
 #include <curl/curl.h>
  
 
+size_t write_curl_data(void *buffer, size_t size, size_t nmemb, void *userp)
+{
+   return size * nmemb;
+}
+
+
 char *randstring(size_t length) {
 
     static char charset[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -58,6 +64,7 @@ int register_pivportal(const char *username, const char *requestid, const char *
       curl_easy_setopt(curl, CURLOPT_URL, url);
       curl_easy_setopt(curl, CURLOPT_POST, 1);
       curl_easy_setopt(curl, CURLOPT_POSTFIELDS, post_fields);
+      curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_curl_data);
       //curl_easy_setopt ( curl, CURLOPT_ERRORBUFFER, teststr_error );  // DEBUG
  
       res = curl_easy_perform(curl);
@@ -108,6 +115,7 @@ int status_pivportal(const char *username, const char *requestid, const char *ur
       curl_easy_setopt(curl, CURLOPT_URL, url);
       curl_easy_setopt(curl, CURLOPT_POST, 1);
       curl_easy_setopt(curl, CURLOPT_POSTFIELDS, post_fields);
+      curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_curl_data);
  
       res = curl_easy_perform(curl);
 
@@ -153,19 +161,23 @@ PAM_EXTERN int pam_sm_authenticate( pam_handle_t *pamh, int flags,int argc, cons
     // TODO: url should be loaded from a config file
     // TODO: http for testing, https later
     // Register a unique Auth request
-    retval = register_pivportal(pUsername, requestid, "http://192.168.0.103/api/request/register");
+    retval = register_pivportal(pUsername, requestid, "http://192.168.0.103/api/client/request/register");
 
     if (retval != 0) {
         return PAM_AUTH_ERR;
     }
 
     // Wait For User To Auth
-    snprintf(request_auth_str, sizeof(request_auth_str), "Request ID: %s", requestid);
+    memset(request_auth_str, 0, sizeof(request_auth_str));
+    snprintf(request_auth_str, sizeof(request_auth_str), "Request ID: %s\n", requestid);
+    printf("\n\n");
+    printf(request_auth_str);
     printf("Press Enter After Authorizing This Request\n");
     getchar();
+    printf("\n");
 
     // Verify User Authed
-    retval = status_pivportal(pUsername, requestid, "http://192.168.0.103/api/request/status");
+    retval = status_pivportal(pUsername, requestid, "http://192.168.0.103/api/client/request/status");
 
     if (retval != 0) {
         return PAM_AUTH_ERR;
