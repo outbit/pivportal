@@ -9,7 +9,8 @@ RUN apt-get update && apt-get install -y python \
   libffi-dev \
   openssl \
   libssl-dev \
-  nginx \
+  apache2 \
+  \
   python-pip
 RUN pip install -U pip
 RUN pip install -U setuptools
@@ -19,6 +20,11 @@ RUN groupadd -r pivportal && useradd -r -g pivportal pivportal
 
 # pivportal-api install latest stable
 RUN pip install -U pivportal
+
+# Apache
+RUN a2enmod ssl
+RUN cp httpd-pivportal.conf /etc/apache2/sites-enabled/
+RUN chown root: /etc/apache2/sites-enabled/httpd-pivportal.conf && chmod 755 /etc/apache2/sites-enabled/httpd-pivportal.conf
 
 # SSL Cert
 RUN openssl req -new -nodes -x509 -subj "/C=US/ST=Oregon/L=Portland/O=IT/CN=testhost" -days 3650 -keyout /etc/ssl/certs/pivportal.key -out /etc/ssl/certs/pivportal.crt -extensions v3_ca || true

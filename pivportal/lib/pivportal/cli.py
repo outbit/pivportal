@@ -1,15 +1,56 @@
 """ Command Line Interface Module """
 import optparse
 from flask import Flask, Response, request
+from random import choice
+from string import ascii_uppercase
 
 
 app = Flask(__name__)
 
+# [{ "username": X, "requestid": X, "client_ip"; X, "authorized": False},]
+auth_requests = []
 
-@app.route('/getpersonbyid', methods = ['POST'])
-def getPersonById():
-    personId = int(request.form['personId'])
-    return str(personId)  # back to a string to produce a proper response
+
+@app.route('/api/request/list', methods = ['POST'])
+def request_list():
+    username = str(request.form['username'])
+    print("verify request was from the user authed connection")
+
+    return str(requestid)
+
+
+@app.route('/api/request/register', methods = ['POST'])
+def request_register():
+    username = str(request.form['username'])
+    requestid = ''.join(choice(ascii_uppercase) for i in range(16))
+    clientip = request.remote_addr
+    print(username)
+    print(requestid)
+
+    # Verify username is safe!!!
+
+    auth_requests.append({"username": username, "requestid": requestid, "client_ip": clientip, "authorized": False})
+
+    return str(requestid)
+
+
+@app.route('/api/request/status', methods = ['POST'])
+def request_status():
+    username = str(request.form['username'])
+    requestid = str(request.form['requestid'])
+    clientip = request.remote_addr
+    print(username)
+    print(requestid)
+
+    # Verify username and requestid is SAFE!!!
+
+    for item in auth_requests:
+        if item["username"] == username and item["requestid"] == requestid and item["client_ip"] == clientip:
+            if item["authorized"] == True:
+                # Success
+                pass
+
+    return str(requestid)
 
 
 class Cli(object):

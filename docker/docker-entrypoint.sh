@@ -1,5 +1,5 @@
 #!/bin/bash
 
-service nginx start
+service apache2 start
 
 su - pivportal -c "pivportal"

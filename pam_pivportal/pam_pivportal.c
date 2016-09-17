@@ -8,7 +8,7 @@
 #include <curl/curl.h>
  
 
-int authenticate_pivportal(const char *url, char *username)
+int authenticate_pivportal(const char *username, const char *url)
 {
   CURL *curl;
   CURLcode res;
@@ -25,6 +25,7 @@ int authenticate_pivportal(const char *url, char *username)
 
   if (curl) {
       curl_easy_setopt(curl, CURLOPT_URL, url);
+      curl_easy_setopt(curl, CURLOPT_POST, 1);
       curl_easy_setopt(curl, CURLOPT_POSTFIELDS, post_fields);
  
       res = curl_easy_perform(curl);
@@ -63,7 +64,8 @@ PAM_EXTERN int pam_sm_authenticate( pam_handle_t *pamh, int flags,int argc, cons
     }
 
     // TODO: url should be loaded from a config file
-    retval = authenticate_pivportal(pUsername, "https://127.0.0.1");
+    // TODO: http for testing, https later
+    retval = authenticate_pivportal(pUsername, "http://192.168.0.103/api/request/register");
 
     if (retval != 0) {
         return PAM_AUTH_ERR;

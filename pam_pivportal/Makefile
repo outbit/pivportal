@@ -2,7 +2,7 @@ CC = gcc
 LD = ld
 
 CFLAGS = -fPIC -fno-stack-protector
-LFLAGS = -x --shared
+LFLAGS = -x --shared -lcurl
 
 TARGET = pam_pivportal
 
@@ -19,5 +19,11 @@ install:
 	sudo chown root:root /usr/lib64/security/$(TARGET).so
 	sudo chmod 755 /usr/lib64/security/$(TARGET).so
 
+test:
+	$(CC) -o $(TARGET)_test $(TARGET)_test.c -lpam -lpam_misc -lcurl
+	./$(TARGET)_test
+
 clean:
 	rm -f $(TARGET).o
+	rm -f $(TARGET)_test
+	rm -f $(TARGET).so
