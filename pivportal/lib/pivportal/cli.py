@@ -41,9 +41,11 @@ def is_duplicate_register(username, requestid, client_ip):
 
 @app.route('/api/rest/request/list', methods = ['POST'])
 def request_list():
-    # s_dn = request.environ.get('HTTP_SSL_CLIENT_S_DN')
-    # TODO verify request was from the user authed connection
     indata = request.get_json()
+    user_serial = request.headers.get('SSL_CLIENT_S_DN')
+
+    # TODO: Do something with this!!! Verify the user
+    print(user_serial)
 
     if "username" not in indata:
         return Response(response=json.dumps({"response": "  invalid request"}), status=400, mimetype="application/json")
@@ -63,8 +65,11 @@ def request_list():
 
 @app.route('/api/rest/request/auth', methods = ['POST'])
 def request_auth():
-    # TODO verify request was from the user authed connection
     indata = request.get_json()
+    user_serial = request.headers.get('SSL_CLIENT_S_DN')
+
+    # TODO: Do something with this!!! Verify the user
+    print(user_serial)
 
     if "username" not in indata or "requestid" not in indata or "client_ip" not in indata or "authorized" not in indata:
         return Response(response=json.dumps({"response": "  invalid request"}), status=400, mimetype="application/json")
