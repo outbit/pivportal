@@ -182,7 +182,7 @@ PAM_EXTERN int pam_sm_authenticate( pam_handle_t *pamh, int flags,int argc, cons
     memset(request_auth_str, 0, sizeof(request_auth_str));
     snprintf(request_auth_str, sizeof(request_auth_str), "Request ID: %s\n", requestid);
     printf("\n\n");
-    printf(request_auth_str);
+    printf("%s", request_auth_str);
     printf("Press Enter After Authorizing This Request\n");
     getchar();
     printf("\n");

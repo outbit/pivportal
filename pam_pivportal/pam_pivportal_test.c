@@ -2,10 +2,12 @@
 #include <security/pam_misc.h>
 #include <stdio.h>
 
+
 const struct pam_conv conv = {
     misc_conv,
     NULL
 };
+
 
 int main(int argc, char *argv[]) {
     pam_handle_t* pamh = NULL;

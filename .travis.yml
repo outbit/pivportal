@@ -13,6 +13,7 @@ install:
 script:
     - 'export PYTHONPATH="${PYTHONPATH}:./pivportal/lib"'
     - "coverage run --source=pivportal $(which nosetests) -w pivportal/test/"
+    - "cd pam_pivportal/ && make clean && make && make test"
 
 after_success:
     - coveralls
