@@ -3,6 +3,12 @@ pivportal
 
 Secure Linux sudo access using a PIV card.
 
+[![Build Status](https://secure.travis-ci.org/starboarder2001/pivportal.png?branch=master "ansible-docs latest build")](http://travis-ci.org/starboarder2001/pivportal)
+ 10 [![PIP Version](https://img.shields.io/pypi/v/pivportal.svg "ansible-docs PyPI version")](https://pypi.python.org/pypi/pivportal)
+ 11 [![PIP Downloads](https://img.shields.io/pypi/dm/pivportal.svg "ansible-docs PyPI downloads")](https://pypi.python.org/pypi/pivportal)
+ 12 [![Coverage Status](https://coveralls.io/repos/starboarder2001/pivportal/badge.svg?branch=develop&service=github)](https://coveralls.io/github/starboarder2001/pivportal?branc    h=develop)
+ 13 [![Gitter IM](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/starboarder2001/pivportal)
+
 Installing
 ======
 
