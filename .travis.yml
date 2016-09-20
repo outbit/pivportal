@@ -15,11 +15,15 @@ before_install:
 #    - sudo apt-get install -y libpam0g-dev
 #    - sudo apt-get install -y libreadline5-dev
 
+# Newer debian systems:
+#    - sudo apt-get install -y libreadline-gplv2-dev
+
 # For gnutils SSL instead of openssl
 #    - sudo apt-get install libcurl4-gnutls-dev
 
 install:
     - pip install nose
+    - pip install coverage
 
 # Run Tests
 script:
