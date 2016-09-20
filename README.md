@@ -43,8 +43,8 @@ In the running docker instance, you are required to:
 
 In the running docker instance, it is recommended to:
 
-- Copy the CRL (certificate revokation list) to /etc/ssl/private/pivportal.crl
-- Copy your valid SSL public certificate to /etc/ssl/private/pivportal.crt
-- Copy your valid SSL private certificate to /etc/ssl/private/pivportal.key
+- Copy the CRL (certificate revokation list) to /etc/ssl/private/pivportal.crl and uncomment the line in /etc/apache2/sites-enabled/httpd-pivportal.conf.
+- Copy your valid SSL public certificate to /etc/ssl/private/pivportal.crt.
+- Copy your valid SSL private certificate to /etc/ssl/private/pivportal.key.
 
 Connect using a web browser to the pivportal server.
