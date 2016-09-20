@@ -8,7 +8,15 @@ python:
 # Install Dependencies
 before_install:
     - sudo apt-get -qq update
-#    - sudo apt-get install -y pam-devel libcurl-devel
+    - sudo apt-get install -y libreadline-gplv2-dev
+    - sudo apt-get install libcurl4-openssl-dev
+
+# Old debian systems:
+#    - sudo apt-get install -y libpam0g-dev
+#    - sudo apt-get install -y libreadline5-dev
+
+# For gnutils SSL instead of openssl
+#    - sudo apt-get install libcurl4-gnutls-dev
 
 install:
     - pip install nose
