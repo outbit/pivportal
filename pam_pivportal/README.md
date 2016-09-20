@@ -13,10 +13,10 @@ Install
 ====
 
 Debian
-$ apt-get install pam-devel libcurl-devel
+$ sudo apt-get install -y libpam0g-dev libcurl4-openssl-dev
 
 Redhat / CentOS
-$ yum install pam-devel libcurl-devel
+$ sudo yum install pam-devel libcurl-devel
 
 ```bash
 $ make install
