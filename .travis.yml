@@ -23,6 +23,7 @@ before_install:
 
 install:
     - pip install nose
+    - pip install flask
     - pip install coverage
 
 # Run Tests
