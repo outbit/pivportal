@@ -16,9 +16,12 @@ Install
 $ make install
 ```
 
-Example /etc/pam.d/sudo file.
+Example /etc/pam.d/sudo file:
 
 ```bash
-auth sufficient pam_pivportal.so
-account sufficient pam_pivportal.so
+auth required pam_pivportal.so
+account include system-auth
+password include system-auth
+session optional pam_keyinit.so revoke
+session required pam_limits.so
 ```
