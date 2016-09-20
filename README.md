@@ -24,7 +24,7 @@ Usage
 ======
 
 ```bash
-docker run -d -p 80:80 -p 443:443 starboarder2001/pivportal
+docker run -d -p 80:80 -p 442:442 -p 443:443 starboarder2001/pivportal
 ```
 
 Connect using a web browser to the pivportal server.
