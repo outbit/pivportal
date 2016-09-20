@@ -9,7 +9,7 @@ python:
 before_install:
     - sudo apt-get -qq update
     - sudo apt-get install -y libreadline-gplv2-dev
-    - sudo apt-get install libcurl4-openssl-dev
+    - sudo apt-get install -y libcurl4-openssl-dev
 
 # Old debian systems:
 #    - sudo apt-get install -y libpam0g-dev
