@@ -12,6 +12,12 @@ $ make
 Install
 ====
 
+Debian
+$ apt-get install pam-devel libcurl-devel
+
+Redhat / CentOS
+$ yum install pam-devel libcurl-devel
+
 ```bash
 $ make install
 ```

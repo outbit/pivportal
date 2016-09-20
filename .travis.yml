@@ -8,6 +8,7 @@ python:
 # Install Dependencies
 install:
     - pip install nose
+    - apt-get install pam-devel libcurl-devel
 
 # Run Tests
 script:
