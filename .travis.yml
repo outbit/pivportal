@@ -6,9 +6,12 @@ python:
   - "2.7"
 
 # Install Dependencies
+before_install:
+    - sudo apt-get -qq update
+#    - sudo apt-get install -y pam-devel libcurl-devel
+
 install:
     - pip install nose
-    - apt-get install pam-devel libcurl-devel
 
 # Run Tests
 script:
