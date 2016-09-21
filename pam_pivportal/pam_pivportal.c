@@ -6,7 +6,71 @@
 
 #include <stdio.h>
 #include <curl/curl.h>
- 
+
+#include <unistd.h>
+#include <glib.h>
+
+
+#define PIVPORTAL_CONFIG_FILE "/etc/pivportal.conf"
+#define MAX_STR 255
+
+
+char g_server_ip[MAX_STR] = {0};
+char g_server_port[MAX_STR] = {0};
+int g_server_ssl_verify_host = 0;
+
+
+int read_config() {
+    GKeyFile *keyfile = 0;
+    GKeyFileFlags flags = 0;
+    GError *error = 0;
+    gchar *server_ip = 0, *server_port = 0;
+
+    // Default Values
+    memset(g_server_ip, 0, sizeof(g_server_ip));
+    memset(g_server_port, 0, sizeof(g_server_port));
+    snprintf(g_server_ip, sizeof(g_server_ip), "%s", "127.0.0.1");
+    snprintf(g_server_port, sizeof(g_server_port), "%s", "442");
+
+    // Check If Config file exists, exit if it doesnt
+    if ( 0 != access (PIVPORTAL_CONFIG_FILE, F_OK) ) {
+        // No config file is ok
+        return(0);
+    }
+
+    keyfile = (GKeyFile *)g_key_file_new();
+    flags = G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS;
+
+    /*
+    Example: /etc/pivportal.conf
+     [server]
+     ip=192.168.0.10
+     port=442
+     ssl_verify_host=0
+    */
+    if (!g_key_file_load_from_file(keyfile, PIVPORTAL_CONFIG_FILE, flags, &error)) {
+        g_error(error->message);
+        return(-1);
+    }
+
+    // Get Configuration Options
+    server_ip = (gchar *)g_key_file_get_string(keyfile, "server", "ip", NULL);
+    server_port = (gchar *)g_key_file_get_string(keyfile, "server", "port", NULL);
+    g_server_ssl_verify_host = g_key_file_get_integer(keyfile, "server", "ssl_verify_host", NULL); // Defaults to 0 if not found in file
+
+    if ( server_ip != GError ) {
+        memset(g_server_ip, 0, sizeof(g_server_ip));
+        snprintf(g_server_ip, sizeof(g_server_ip), "%s", server_ip);
+    }
+
+    if ( server_port != GError ) {
+        memset(g_server_port, 0, sizeof(g_server_port));
+        snprintf(g_server_port, sizeof(g_server_port), "%s", server_port);
+    }
+
+    return(0);
+}
+
 
 size_t write_curl_data(void *buffer, size_t size, size_t nmemb, void *userp)
 {
@@ -43,9 +107,9 @@ char *randstring(size_t length) {
 
 int register_pivportal(const char *username, const char *requestid, const char *url, long verifyHost)
 {
-  CURL *curl;
-  CURLcode res;
-  char post_fields[255] = {};
+  CURL *curl = 0;
+  CURLcode res = 0;
+  char post_fields[MAX_STR] = {0};
   int ret = 1;
   long status_code = 401;
   int retval = 0;
@@ -54,7 +118,7 @@ int register_pivportal(const char *username, const char *requestid, const char *
   /*
   char teststr[255] = {}; // DEBUG
   */
-  char teststr_error[255] = {}; // DEBUG
+  char teststr_error[MAX_STR] = {}; // DEBUG
   memset(teststr_error, 0, sizeof(teststr_error));
 
   // Build Post
@@ -71,7 +135,7 @@ int register_pivportal(const char *username, const char *requestid, const char *
       curl_easy_setopt(curl, CURLOPT_USE_SSL, 1);
       curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, verifyHost);
       curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, verifyHost);
-      //curl_easy_setopt(curl, CURLOPT_SSL_VERIFYSTATUS, verifyHost);
+      //curl_easy_setopt(curl, CURLOPT_SSL_VERIFYSTATUS, verifyHost); TODO, do I need this?
       curl_easy_setopt(curl, CURLOPT_POSTFIELDS, post_fields);
       curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_curl_data);
       curl_easy_setopt ( curl, CURLOPT_ERRORBUFFER, teststr_error );  // DEBUG
@@ -104,9 +168,9 @@ int register_pivportal(const char *username, const char *requestid, const char *
 
 int status_pivportal(const char *username, const char *requestid, const char *url, long verifyHost)
 {
-  CURL *curl;
-  CURLcode res;
-  char post_fields[255] = {};
+  CURL *curl = 0;
+  CURLcode res = 0;
+  char post_fields[MAX_STR] = {0};
   int ret = 1;
   long status_code = 401;
   int retval = 0;
@@ -125,7 +189,7 @@ int status_pivportal(const char *username, const char *requestid, const char *ur
       curl_easy_setopt(curl, CURLOPT_USE_SSL, 1);
       curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, verifyHost);
       curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, verifyHost);
-      //curl_easy_setopt(curl, CURLOPT_SSL_VERIFYSTATUS, verifyHost);
+      //curl_easy_setopt(curl, CURLOPT_SSL_VERIFYSTATUS, verifyHost); TODO, do I need this?
       curl_easy_setopt(curl, CURLOPT_POSTFIELDS, post_fields);
       curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_curl_data);
  
@@ -157,10 +221,14 @@ PAM_EXTERN int pam_sm_acct_mgmt(pam_handle_t *pamh, int flags, int argc, const c
 
 
 PAM_EXTERN int pam_sm_authenticate( pam_handle_t *pamh, int flags,int argc, const char **argv ) {
-    int retval;
-    const char* pUsername;
-    char *requestid;
-    char request_auth_str[255] = {};
+    int retval = 0;
+    const char* pUsername = 0;
+    char *requestid = 0;
+    char request_auth_str[MAX_STR] = {0};
+    char register_url_str[MAX_STR] = {0};
+    char status_url_str[MAX_STR] = {0};
+
+    read_config();
 
     requestid = randstring(16);
 
@@ -170,9 +238,10 @@ PAM_EXTERN int pam_sm_authenticate( pam_handle_t *pamh, int flags,int argc, cons
         return retval;
     }
 
-    // TODO: url should be loaded from a config file
-    // TODO: Should verify host, notice it ends with a 0, it should be a 1. Should be configurable from file.
-    retval = register_pivportal(pUsername, requestid, "https://192.168.0.103:442/api/client/request/register", 0);
+    // Register Auth Request
+    memset(register_url_str, 0, sizeof(register_url_str));
+    snprintf(register_url_str, sizeof(register_url_str), "https://%s:%s/api/client/request/register", g_server_ip, g_server_port);
+    retval = register_pivportal(pUsername, requestid, register_url_str, g_server_ssl_verify_host);
 
     if (retval != 0) {
         return PAM_AUTH_ERR;
@@ -188,7 +257,9 @@ PAM_EXTERN int pam_sm_authenticate( pam_handle_t *pamh, int flags,int argc, cons
     printf("\n");
 
     // Verify User Authed
-    retval = status_pivportal(pUsername, requestid, "https://192.168.0.103:442/api/client/request/status", 0);
+    memset(status_url_str, 0, sizeof(status_url_str));
+    snprintf(status_url_str, sizeof(status_url_str), "https://%s:%s/api/client/request/status", g_server_ip, g_server_port);
+    retval = status_pivportal(pUsername, requestid, register_url_str, g_server_ssl_verify_host);
 
     if (retval != 0) {
         return PAM_AUTH_ERR;
