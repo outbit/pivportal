@@ -34,6 +34,10 @@ RUN chown pivportal: /etc/ssl/certs/pivportal* && chmod 440 /etc/ssl/certs/pivpo
 # Log file
 RUN touch /var/log/pivportal.log && chmod 755 /var/log/pivportal.log && chown pivportal: /var/log/pivportal.log
 
+# Config file for pivportal
+COPY ./pivportal-server.conf /etc/
+RUN chown pivportal: /etc/pivportal-server.conf && chmod 440 /etc/pivportal-server.conf
+
 # Entry Point
 COPY ./docker-entrypoint.sh /sbin/
 RUN chmod 755 /sbin/docker-entrypoint.sh
