@@ -259,7 +259,7 @@ PAM_EXTERN int pam_sm_authenticate( pam_handle_t *pamh, int flags,int argc, cons
     // Verify User Authed
     memset(status_url_str, 0, sizeof(status_url_str));
     snprintf(status_url_str, sizeof(status_url_str), "https://%s:%s/api/client/request/status", g_server_ip, g_server_port);
-    retval = status_pivportal(pUsername, requestid, register_url_str, g_server_ssl_verify_host);
+    retval = status_pivportal(pUsername, requestid, status_url_str, g_server_ssl_verify_host);
 
     if (retval != 0) {
         return PAM_AUTH_ERR;
