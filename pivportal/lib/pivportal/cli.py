@@ -12,6 +12,14 @@ app = Flask(__name__)
 # [{ "username": X, "requestid": X, "client_ip"; X, "authorized": False},]
 auth_requests = []
 
+# {"dn1": "user1", "dn2": "user2"}
+dn_to_username = {}
+
+def dn_is_valid(dn):
+    if re.match(r'^[a-zA-Z0-9_\-,\(\):]+$', dn):
+        return True
+    return False
+
 
 def username_is_valid(username):
     if re.match(r'^[a-zA-Z0-9_\-]+$', username):
@@ -41,17 +49,19 @@ def is_duplicate_register(username, requestid, client_ip):
 
 @app.route('/api/rest/request/list', methods = ['POST'])
 def request_list():
-    indata = request.get_json()
-    user_serial = request.headers.get('SSL_CLIENT_S_DN')
+    user_dn = request.headers.get('SSL_CLIENT_S_DN')
 
-    # TODO: Do something with this!!! Verify the user
-    print(user_serial)
-
-    if "username" not in indata:
+    # Valid DN
+    if not dn_is_valid(user_dn):
         return Response(response=json.dumps({"response": "  invalid request"}), status=400, mimetype="application/json")
 
-    username = indata["username"]
+    # Authorize User
+    if user_dn not in dn_to_username:
+        return Response(response=json.dumps({"response": "Authentication Failure"}), status=401, mimetype="application/json")
 
+    username = dn_to_username[user_dn]
+
+    # Verify Request
     if not username_is_valid(username):
         return Response(response=json.dumps({"response": "  invalid request"}), status=400, mimetype="application/json")
 
@@ -66,15 +76,21 @@ def request_list():
 @app.route('/api/rest/request/auth', methods = ['POST'])
 def request_auth():
     indata = request.get_json()
-    user_serial = request.headers.get('SSL_CLIENT_S_DN')
+    user_dn = request.headers.get('SSL_CLIENT_S_DN')
 
-    # TODO: Do something with this!!! Verify the user
-    print(user_serial)
-
-    if "username" not in indata or "requestid" not in indata or "client_ip" not in indata or "authorized" not in indata:
+    # Valid DN
+    if not dn_is_valid(user_dn):
         return Response(response=json.dumps({"response": "  invalid request"}), status=400, mimetype="application/json")
 
-    username = indata['username']
+    # Authorize User
+    if user_dn not in dn_to_username:
+        return Response(response=json.dumps({"response": "Authentication Failure"}), status=401, mimetype="application/json")
+
+    # Verify Request
+    if "requestid" not in indata or "client_ip" not in indata or "authorized" not in indata:
+        return Response(response=json.dumps({"response": "  invalid request"}), status=400, mimetype="application/json")
+
+    username = dn_to_username[user_dn]
     requestid = indata['requestid']
     client_ip = indata['client_ip']
     authorized = indata['authorized']

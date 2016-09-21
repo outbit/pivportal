@@ -4,7 +4,7 @@ pivportalControllers.controller('pivportalAuthCtrl', ['$auth', '$scope', '$http'
   function ($auth, $scope, $http, $rootScope, toaster, $interval) {
       $scope.authorize_request = function(username, requestid, client_ip, authorized) {
             // Somehow post data
-              $http.post('/api/rest/request/auth', {"username": username, "requestid": requestid, "client_ip": client_ip, "authorized": authorized}).success(function (data) {
+              $http.post('/api/rest/request/auth', {"requestid": requestid, "client_ip": client_ip, "authorized": authorized}).success(function (data) {
               $scope.list_requests(); // Update list
           }).error(function (data) {
               console.log(data);
@@ -13,7 +13,7 @@ pivportalControllers.controller('pivportalAuthCtrl', ['$auth', '$scope', '$http'
 
 
       $scope.list_requests = function(){
-          $http.post('/api/rest/request/list', {"username": "whitesid"}).success(function (data) {
+          $http.post('/api/rest/request/list').success(function (data) {
               $scope.auth_requests = data;
           }).error(function (data) {
               console.log(data);
