@@ -58,12 +58,12 @@ int read_config() {
     server_port = (gchar *)g_key_file_get_string(keyfile, "server", "port", NULL);
     g_server_ssl_verify_host = g_key_file_get_integer(keyfile, "server", "ssl_verify_host", NULL); // Defaults to 0 if not found in file
 
-    if ( server_ip != GError ) {
+    if ( server_ip != 0 ) {
         memset(g_server_ip, 0, sizeof(g_server_ip));
         snprintf(g_server_ip, sizeof(g_server_ip), "%s", server_ip);
     }
 
-    if ( server_port != GError ) {
+    if ( server_port != 0 ) {
         memset(g_server_port, 0, sizeof(g_server_port));
         snprintf(g_server_port, sizeof(g_server_port), "%s", server_port);
     }
