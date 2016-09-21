@@ -26,12 +26,6 @@ int read_config() {
     GError *error = 0;
     gchar *server_ip = 0, *server_port = 0;
 
-    // Default Values
-    memset(g_server_ip, 0, sizeof(g_server_ip));
-    memset(g_server_port, 0, sizeof(g_server_port));
-    snprintf(g_server_ip, sizeof(g_server_ip), "%s", "127.0.0.1");
-    snprintf(g_server_port, sizeof(g_server_port), "%s", "442");
-
     // Check If Config file exists, exit if it doesnt
     if ( 0 != access (PIVPORTAL_CONFIG_FILE, F_OK) ) {
         // No config file is ok
@@ -227,6 +221,12 @@ PAM_EXTERN int pam_sm_authenticate( pam_handle_t *pamh, int flags,int argc, cons
     char request_auth_str[MAX_STR] = {0};
     char register_url_str[MAX_STR] = {0};
     char status_url_str[MAX_STR] = {0};
+
+    // Default Values
+    memset(g_server_ip, 0, sizeof(g_server_ip));
+    memset(g_server_port, 0, sizeof(g_server_port));
+    snprintf(g_server_ip, sizeof(g_server_ip), "%s", "127.0.0.1");
+    snprintf(g_server_port, sizeof(g_server_port), "%s", "442");
 
     read_config();
 

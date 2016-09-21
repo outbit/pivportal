@@ -2,7 +2,7 @@ CC = gcc
 LD = ld
 
 CFLAGS = -fPIC -fno-stack-protector -I/usr/include/glib-2.0/ -I/usr/lib64/glib-2.0/include/
-LFLAGS = -x --shared -lcurl
+LFLAGS = -x --shared -lcurl -lglib-2.0
 
 TARGET = pam_pivportal
 
