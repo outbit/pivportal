@@ -32,4 +32,5 @@ port - TCP Port to run service on
 authorized_users: {"dn1": "user1", "dn2": "user2"}
 listen_address: 127.0.0.1
 port: 8088
+register_ticket_timeout: 60
 ```

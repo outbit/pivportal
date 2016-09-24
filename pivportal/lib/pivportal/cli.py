@@ -205,7 +205,7 @@ class Cli(object):
                     if self.listen is None:
                         self.listen = str(pivportal_conf["listen_address"])
                 if "register_ticket_timeout" in pivportal_conf:
-                    register_ticket_timeout = str(pivportal_conf["register_ticket_timeout"])
+                    register_ticket_timeout = int(pivportal_conf["register_ticket_timeout"])
 
 
     def run(self):
