@@ -69,14 +69,13 @@ int read_config() {
         snprintf(g_client_ssl_cert, sizeof(g_client_ssl_cert), "%s", client_ssl_cert);
     }
 
-/* TODO: Need to test the best practice for freeing the strings allocated
     if (server_ip)
-        free(server_ip)
+        free(server_ip);
     if (server_port)
-        free (server_port)
+        free (server_port);
     if (client_ssl_cert)
-        free(client_ssl_cert)
-*/
+        free(client_ssl_cert);
+
     return(0);
 }
 
