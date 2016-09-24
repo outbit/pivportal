@@ -37,6 +37,7 @@ RUN openssl req -new -subj "/C=US/ST=Oregon/L=Portland/O=IT/CN=testhost" -key /e
 
 # SSL Sign the client certificate with our CA cert.
 RUN openssl x509 -req -days 3650 -in /etc/ssl/certs/pivportalClient.csr -CA /etc/ssl/certs/pivportalClientCA.crt -CAkey /etc/ssl/certs/pivportalClientCA.key -set_serial 01 -out /etc/ssl/certs/pivportalClient.crt
+RUN cat /etc/ssl/certs/pivportalClient.crt /etc/ssl/certs/pivportalClient.key > /etc/ssl/certs/pivportalClient.pem
 
 # SSL Server Cert
 RUN openssl req -new -nodes -x509 -subj "/C=US/ST=Oregon/L=Portland/O=IT/CN=testhost" -days 3650 -keyout /etc/ssl/certs/pivportal.key -out /etc/ssl/certs/pivportal.crt -extensions v3_ca || true
