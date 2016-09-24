@@ -1,6 +1,8 @@
 pivportal
 ===========
 
+[![Join the chat at https://gitter.im/starboarder2001/pivportal](https://badges.gitter.im/starboarder2001/pivportal.svg)](https://gitter.im/starboarder2001/pivportal?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Secure Linux sudo access using a PIV card.
 
 [![Build Status](https://secure.travis-ci.org/starboarder2001/pivportal.png?branch=master "ansible-docs latest build")](http://travis-ci.org/starboarder2001/pivportal)
