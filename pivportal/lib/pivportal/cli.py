@@ -7,15 +7,17 @@ import re
 from flask import Flask, Response, request
 import json
 import yaml
+import time
 
 
 app = Flask(__name__)
 
-# [{ "username": X, "requestid": X, "client_ip": X, "authorized": False},]
+# [{ "username": X, "requestid": X, "client_ip": X, "authorized": False, "time": time.time()},]
 auth_requests = []
 
 # {"dn1": "user1", "dn2": "user2"}
 dn_to_username = {}
+register_ticket_timeout = 60
 
 
 def dn_is_valid(dn):
@@ -69,9 +71,15 @@ def request_list():
         return Response(response=json.dumps({"response": "  invalid request"}), status=400, mimetype="application/json")
 
     request_list = []
+    count = 0
     for item in auth_requests:
         if item["username"] == username:
-            request_list.append(item)
+            if time.time() < item["time"]+register_ticket_timeout:
+                request_list.append(item)
+            else:
+                # Request Expired
+                del auth_requests[count]
+        count += 1
 
     return Response(response=json.dumps(request_list), status=200, mimetype="application/json")
 
@@ -105,7 +113,7 @@ def request_auth():
     count = 0
     for item in auth_requests:
         if item["username"] == username and item["requestid"] == requestid and item["client_ip"] == client_ip:
-            if item["authorized"] == False and authorized == True:
+            if item["authorized"] == False and authorized == True and time.time() < item["time"]+register_ticket_timeout:
                 auth_requests[count]["authorized"] = True
         count += 1
 
@@ -124,7 +132,7 @@ def request_register():
     if is_duplicate_register(username, requestid, auth_requests):
         return Response(response=json.dumps({"response": "  invalid request"}), status=400, mimetype="application/json")
 
-    auth_requests.append({"username": username, "requestid": requestid, "client_ip": client_ip, "authorized": False})
+    auth_requests.append({"username": username, "requestid": requestid, "client_ip": client_ip, "authorized": False, "time": time.time()})
 
     return Response(response=json.dumps({"response": "success"}), status=200, mimetype="application/json")
 
@@ -196,6 +204,8 @@ class Cli(object):
                 if "listen_address" in pivportal_conf:
                     if self.listen is None:
                         self.listen = str(pivportal_conf["listen_address"])
+                if "register_ticket_timeout" in pivportal_conf:
+                    register_ticket_timeout = str(pivportal_conf["register_ticket_timeout"])
 
 
     def run(self):
