@@ -9,27 +9,14 @@ Secure Linux sudo access using a PIV card.
 [![Coverage Status](https://coveralls.io/repos/starboarder2001/pivportal/badge.svg?branch=develop&service=github)](https://coveralls.io/github/starboarder2001/pivportal?branc    h=develop)
 [![Gitter IM](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/starboarder2001/pivportal)
 
-Installing
+Installing pivportal Server
 ======
 
 ```bash
 $ docker pull starboarder2001/pivportal
 ```
 
-PAM Configuration on Linux Client
-======
-
-/etc/pam.d/sudo
-
-```bash
-auth required pam_pivportal.so
-account include system-auth
-password include system-auth
-session optional pam_keyinit.so revoke
-session required pam_limits.so
-```
-
-Usage
+Configuring pivportal Server
 ======
 
 ```bash
@@ -48,3 +35,31 @@ In the running docker instance, it is recommended to:
 - Copy your valid SSL private certificate to /etc/ssl/private/pivportal.key.
 
 Connect using a web browser to the pivportal server.
+
+PAM Configuration on Linux Client
+======
+
+Example /etc/pam.d/sudo file:
+
+```bash
+auth required pam_pivportal.so
+account include system-auth
+password include system-auth
+session optional pam_keyinit.so revoke
+session required pam_limits.so
+```
+
+Example /etc/pivportal.conf:
+
+ip - IP Address of the server
+
+port - TCP Port to user to connect to the server
+
+ssl_verify_host - SSL verify server certificate is valid. 0 = false, 1 = true.
+
+```bash
+[server]
+ip=192.16.0.1
+port=442
+ssl_verify_host=0
+```
