@@ -17,6 +17,7 @@
 
 char g_server_ip[MAX_STR] = {0};
 char g_server_port[MAX_STR] = {0};
+char g_client_ssl_cert[MAX_STR] = {0};
 int g_server_ssl_verify_host = 0;
 
 
@@ -24,7 +25,7 @@ int read_config() {
     GKeyFile *keyfile = 0;
     GKeyFileFlags flags = 0;
     GError *error = 0;
-    gchar *server_ip = 0, *server_port = 0;
+    gchar *server_ip = 0, *server_port = 0, *client_ssl_cert;
 
     // Check If Config file exists, exit if it doesnt
     if ( 0 != access (PIVPORTAL_CONFIG_FILE, F_OK) ) {
@@ -50,6 +51,7 @@ int read_config() {
     // Get Configuration Options
     server_ip = (gchar *)g_key_file_get_string(keyfile, "server", "ip", NULL);
     server_port = (gchar *)g_key_file_get_string(keyfile, "server", "port", NULL);
+    client_ssl_cert = (gchar *)g_key_file_get_string(keyfile, "server", "client_ssl_cert", NULL);
     g_server_ssl_verify_host = g_key_file_get_integer(keyfile, "server", "ssl_verify_host", NULL); // Defaults to 0 if not found in file
 
     if ( server_ip != 0 ) {
@@ -62,6 +64,19 @@ int read_config() {
         snprintf(g_server_port, sizeof(g_server_port), "%s", server_port);
     }
 
+    if ( client_ssl_cert != 0 ) {
+        memset(g_client_ssl_cert, 0, sizeof(g_client_ssl_cert));
+        snprintf(g_client_ssl_cert, sizeof(g_client_ssl_cert), "%s", client_ssl_cert);
+    }
+
+/* TODO: Need to test the best practice for freeing the strings allocated
+    if (server_ip)
+        free(server_ip)
+    if (server_port)
+        free (server_port)
+    if (client_ssl_cert)
+        free(client_ssl_cert)
+*/
     return(0);
 }
 
@@ -99,7 +114,7 @@ char *randstring(size_t length) {
 }
 
 
-int register_pivportal(const char *username, const char *requestid, const char *url, long verifyHost)
+int register_pivportal(const char *username, const char *requestid, const char *url, const char *client_ssl_cert, long verifyHost)
 {
   CURL *curl = 0;
   CURLcode res = 0;
@@ -129,6 +144,7 @@ int register_pivportal(const char *username, const char *requestid, const char *
       curl_easy_setopt(curl, CURLOPT_USE_SSL, 1);
       curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, verifyHost);
       curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, verifyHost);
+      curl_easy_setopt(curl, CURLOPT_SSLCERT, client_ssl_cert);
       curl_easy_setopt(curl, CURLOPT_POSTFIELDS, post_fields);
       curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_curl_data);
       //curl_easy_setopt ( curl, CURLOPT_ERRORBUFFER, teststr_error );  // DEBUG
@@ -159,7 +175,7 @@ int register_pivportal(const char *username, const char *requestid, const char *
 }
 
 
-int status_pivportal(const char *username, const char *requestid, const char *url, long verifyHost)
+int status_pivportal(const char *username, const char *requestid, const char *url, const char *client_ssl_cert, long verifyHost)
 {
   CURL *curl = 0;
   CURLcode res = 0;
@@ -182,6 +198,7 @@ int status_pivportal(const char *username, const char *requestid, const char *ur
       curl_easy_setopt(curl, CURLOPT_USE_SSL, 1);
       curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, verifyHost);
       curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, verifyHost);
+      curl_easy_setopt(curl, CURLOPT_SSLCERT, client_ssl_cert);
       curl_easy_setopt(curl, CURLOPT_POSTFIELDS, post_fields);
       curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_curl_data);
  
@@ -223,8 +240,10 @@ PAM_EXTERN int pam_sm_authenticate( pam_handle_t *pamh, int flags,int argc, cons
     // Default Values
     memset(g_server_ip, 0, sizeof(g_server_ip));
     memset(g_server_port, 0, sizeof(g_server_port));
+    memset(g_client_ssl_cert, 0, sizeof(g_client_ssl_cert));
     snprintf(g_server_ip, sizeof(g_server_ip), "%s", "127.0.0.1");
     snprintf(g_server_port, sizeof(g_server_port), "%s", "442");
+    snprintf(g_server_port, sizeof(g_server_port), "%s", "/etc/ssl/certs/pivportalClient.pem");
 
     read_config();
 
@@ -239,7 +258,7 @@ PAM_EXTERN int pam_sm_authenticate( pam_handle_t *pamh, int flags,int argc, cons
     // Register Auth Request
     memset(register_url_str, 0, sizeof(register_url_str));
     snprintf(register_url_str, sizeof(register_url_str), "https://%s:%s/api/client/request/register", g_server_ip, g_server_port);
-    retval = register_pivportal(pUsername, requestid, register_url_str, g_server_ssl_verify_host);
+    retval = register_pivportal(pUsername, requestid, register_url_str, g_client_ssl_cert, g_server_ssl_verify_host);
 
     if (retval != 0) {
         return PAM_AUTH_ERR;
@@ -257,7 +276,7 @@ PAM_EXTERN int pam_sm_authenticate( pam_handle_t *pamh, int flags,int argc, cons
     // Verify User Authed
     memset(status_url_str, 0, sizeof(status_url_str));
     snprintf(status_url_str, sizeof(status_url_str), "https://%s:%s/api/client/request/status", g_server_ip, g_server_port);
-    retval = status_pivportal(pUsername, requestid, status_url_str, g_server_ssl_verify_host);
+    retval = status_pivportal(pUsername, requestid, status_url_str, g_client_ssl_cert, g_server_ssl_verify_host);
 
     if (retval != 0) {
         return PAM_AUTH_ERR;

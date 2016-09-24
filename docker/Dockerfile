@@ -27,7 +27,18 @@ RUN a2enmod headers
 COPY ./httpd-pivportal.conf /etc/apache2/sites-enabled/
 RUN chown root: /etc/apache2/sites-enabled/httpd-pivportal.conf && chmod 755 /etc/apache2/sites-enabled/httpd-pivportal.conf
 
-# SSL Cert
+# SSL CA Certificate For Client Cert
+RUN openssl genrsa -nodes -out /etc/ssl/certs/pivportalClientCA.key 4096
+RUN openssl req -new -x509 -subj "/C=US/ST=Oregon/L=Portland/O=IT/CN=pivportalclient" -days 3650 -key /etc/ssl/certs/pivportalClientCA.key -out /etc/ssl/certs/pivportalClientCA.crt
+
+# SSL Create the Client Key and CSR
+RUN openssl genrsa -nodes -out /etc/ssl/certs/pivportalClient.key 1024
+RUN openssl req -new -subj "/C=US/ST=Oregon/L=Portland/O=IT/CN=testhost" -key /etc/ssl/certs/pivportalClient.key -out /etc/ssl/certs/pivportalClient.csr
+
+# SSL Sign the client certificate with our CA cert.
+RUN openssl x509 -req -days 3650 -in /etc/ssl/certs/pivportalClient.csr -CA /etc/ssl/certs/pivportalClientCA.crt -CAkey /etc/ssl/certs/pivportalClientCA.key -set_serial 01 -out /etc/ssl/certs/pivportalClient.crt
+
+# SSL Server Cert
 RUN openssl req -new -nodes -x509 -subj "/C=US/ST=Oregon/L=Portland/O=IT/CN=testhost" -days 3650 -keyout /etc/ssl/certs/pivportal.key -out /etc/ssl/certs/pivportal.crt -extensions v3_ca || true
 RUN chown pivportal: /etc/ssl/certs/pivportal* && chmod 440 /etc/ssl/certs/pivportal*
 
