@@ -41,6 +41,7 @@ int read_config() {
      [server]
      ip=192.168.0.10
      port=442
+     client_ssl_cert=/etc/ssl/certs/pivportalClient.pem
      ssl_verify_host=0
     */
     if (!g_key_file_load_from_file(keyfile, PIVPORTAL_CONFIG_FILE, flags, &error)) {

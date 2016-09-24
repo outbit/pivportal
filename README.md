@@ -39,6 +39,9 @@ Connect using a web browser to the pivportal server.
 PAM Configuration on Linux Client
 ======
 
+- Build and Install pam_pivportal.so.
+- Copy /etc/ssl/private/pivportalClient.pem from the docker container to /etc/ssl/certs/pivportalClient.pem on each Linux Client.
+
 Example /etc/pam.d/sudo file:
 
 ```bash
@@ -61,5 +64,6 @@ ssl_verify_host - SSL verify server certificate is valid. 0 = false, 1 = true.
 [server]
 ip=192.16.0.1
 port=442
+client_ssl_cert=/etc/ssl/certs/pivportalClient.pem
 ssl_verify_host=0
 ```
