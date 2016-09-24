@@ -129,10 +129,9 @@ int register_pivportal(const char *username, const char *requestid, const char *
       curl_easy_setopt(curl, CURLOPT_USE_SSL, 1);
       curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, verifyHost);
       curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, verifyHost);
-      //curl_easy_setopt(curl, CURLOPT_SSL_VERIFYSTATUS, verifyHost); TODO, do I need this?
       curl_easy_setopt(curl, CURLOPT_POSTFIELDS, post_fields);
       curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_curl_data);
-      curl_easy_setopt ( curl, CURLOPT_ERRORBUFFER, teststr_error );  // DEBUG
+      //curl_easy_setopt ( curl, CURLOPT_ERRORBUFFER, teststr_error );  // DEBUG
  
       res = curl_easy_perform(curl);
 
@@ -183,7 +182,6 @@ int status_pivportal(const char *username, const char *requestid, const char *ur
       curl_easy_setopt(curl, CURLOPT_USE_SSL, 1);
       curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, verifyHost);
       curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, verifyHost);
-      //curl_easy_setopt(curl, CURLOPT_SSL_VERIFYSTATUS, verifyHost); TODO, do I need this?
       curl_easy_setopt(curl, CURLOPT_POSTFIELDS, post_fields);
       curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_curl_data);
  

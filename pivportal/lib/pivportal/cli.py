@@ -1,9 +1,10 @@
 """ Command Line Interface Module """
 import optparse
-from flask import Flask, Response, request
+import os
 from random import choice
 from string import ascii_uppercase
 import re
+from flask import Flask, Response, request
 import json
 import yaml
 
