@@ -17,6 +17,7 @@ auth_requests = []
 # {"dn1": "user1", "dn2": "user2"}
 dn_to_username = {}
 
+
 def dn_is_valid(dn):
     if re.match(r'^[a-zA-Z0-9_\-,\(\):]+$', dn):
         return True
@@ -108,8 +109,7 @@ def request_auth():
                 auth_requests[count]["authorized"] = True
         count += 1
 
-    #return Response(response=json.dumps({"response": "success"}), status=200, mimetype="application/json")
-    return "success"
+    return Response(response=json.dumps({"response": "success"}), status=200, mimetype="application/json")
 
 
 @app.route('/api/client/request/register', methods = ['POST'])
@@ -126,8 +126,7 @@ def request_register():
 
     auth_requests.append({"username": username, "requestid": requestid, "client_ip": client_ip, "authorized": False})
 
-    #return Response(response=json.dumps({"response": "success"}), status=200, mimetype="application/json")
-    return "success"
+    return Response(response=json.dumps({"response": "success"}), status=200, mimetype="application/json")
 
 
 @app.route('/api/client/request/status', methods = ['POST'])
@@ -144,9 +143,8 @@ def request_status():
         if item["username"] == username and item["requestid"] == requestid and item["client_ip"] == client_ip:
             if item["authorized"] == True:
                 # Success
-                #return Response(response=json.dumps({"response": "success"}), status=200, mimetype="application/json")
                 del auth_requests[count]
-                return "success"
+                return Response(response=json.dumps({"response": "success"}), status=200, mimetype="application/json")
             else:
                 # Delete auth_request, it failed anyway
                 del auth_requests[count]
