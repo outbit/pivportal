@@ -38,7 +38,7 @@ ip - IP Address of the server
 
 port - TCP Port to user to connect to the server
 
-ssl_verify_host - SSL verify server certificate is valid
+ssl_verify_host - SSL verify server certificate is valid. 0 = false, 1 = true.
 
 ```bash
 [server]
