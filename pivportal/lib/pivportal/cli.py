@@ -10,7 +10,7 @@ import yaml
 
 app = Flask(__name__)
 
-# [{ "username": X, "requestid": X, "client_ip"; X, "authorized": False},]
+# [{ "username": X, "requestid": X, "client_ip": X, "authorized": False},]
 auth_requests = []
 
 # {"dn1": "user1", "dn2": "user2"}
@@ -40,9 +40,9 @@ def ip_is_valid(ip):
     return False
 
 
-def is_duplicate_register(username, requestid, client_ip):
+def is_duplicate_register(username, requestid, auth_requests):
     for item in auth_requests:
-        if item["username"] == username and item["requestid"] == requestid and item["client_ip"] == client_ip:
+        if item["username"] == username and item["requestid"] == requestid:
             # Request Is Already Registered
             return True
     return False
@@ -120,7 +120,7 @@ def request_register():
     if not username_is_valid(username) or not requestid_is_valid(requestid) or not ip_is_valid(client_ip):
         return Response(response=json.dumps({"response": "  invalid request"}), status=400, mimetype="application/json")
 
-    if is_duplicate_register(username, requestid, client_ip):
+    if is_duplicate_register(username, requestid, auth_requests):
         return Response(response=json.dumps({"response": "  invalid request"}), status=400, mimetype="application/json")
 
     auth_requests.append({"username": username, "requestid": requestid, "client_ip": client_ip, "authorized": False})
