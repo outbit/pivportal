@@ -35,7 +35,9 @@ session required pam_limits.so
 Example /etc/pivportal.conf:
 
 ip - IP Address of the server
+
 port - TCP Port to user to connect to the server
+
 ssl_verify_host - SSL verify server certificate is valid
 
 ```bash

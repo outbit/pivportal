@@ -22,7 +22,9 @@ Config
 Example /etc/pivportal-server.conf:
 
 authorized_users - List of authorized user DN's and mapping to the unix username
+
 listen_address - Listen IP Address
+
 port - TCP Port to run service on
 
 ```bash
