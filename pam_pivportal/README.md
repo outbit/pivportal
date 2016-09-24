@@ -1,15 +1,7 @@
 pam_pivportal
 ==================
 
-
-Build
-====
-
-```bash
-$ make
-```
-
-Install
+Build and Installation
 ====
 
 Debian
