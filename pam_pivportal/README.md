@@ -26,6 +26,9 @@ $ sudo yum install pam-devel libcurl-devel glib2-devel
 $ make && make install
 ```
 
+Configuration
+====
+
 Example /etc/pam.d/sudo file:
 
 ```bash
