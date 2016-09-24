@@ -24,6 +24,7 @@ RUN pip install -U pivportal
 RUN a2enmod ssl
 RUN a2enmod proxy_http
 RUN a2enmod headers
+COPY ./ports.conf /etc/apache2/
 COPY ./httpd-pivportal.conf /etc/apache2/sites-enabled/
 RUN chown root: /etc/apache2/sites-enabled/httpd-pivportal.conf && chmod 755 /etc/apache2/sites-enabled/httpd-pivportal.conf
 
