@@ -14,14 +14,16 @@ Install
 
 Debian
 
+```bash
 $ sudo apt-get install -y libpam0g-dev libcurl4-openssl-dev glib2-devel
+$ make && make install
+```
 
 Redhat / CentOS
 
-$ sudo yum install pam-devel libcurl-devel glib2-devel
-
 ```bash
-$ make install
+$ sudo yum install pam-devel libcurl-devel glib2-devel
+$ make && make install
 ```
 
 Example /etc/pam.d/sudo file:
