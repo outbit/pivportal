@@ -197,7 +197,7 @@ class Cli(object):
             with open('/etc/pivportal-server.conf', 'r') as f:
                 pivportal_conf = yaml.load(f)
                 if "authorized_users" in pivportal_conf:
-                    dn_to_username = dict(pivportal_confg["authorized_users"])
+                    dn_to_username = dict(pivportal_conf["authorized_users"])
                 if "port" in pivportal_conf:
                     if self.port is None:
                         self.port = str(pivportal_conf["port"])
