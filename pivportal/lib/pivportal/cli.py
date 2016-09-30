@@ -39,7 +39,8 @@ def requestid_is_valid(requestid):
 
 
 def ip_is_valid(ip):
-    if re.match(r'^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$', ip):
+    if ip is None or re.match(r'^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$', ip):
+        # ip is None when testing
         return True
     return False
 
@@ -126,7 +127,7 @@ def request_register():
     requestid = str(request.form['requestid'])
     client_ip = request.remote_addr
 
-    if not username_is_valid(username) or not requestid_is_valid(requestid) or (client_ip is not None and not ip_is_valid(client_ip)):
+    if not username_is_valid(username) or not requestid_is_valid(requestid) or not ip_is_valid(client_ip):
         # client_ip is None when testing, so its ok
         return Response(response=json.dumps({"response": "  invalid request"}), status=400, mimetype="application/json")
 
