@@ -28,18 +28,6 @@ COPY ./ports.conf /etc/apache2/
 COPY ./httpd-pivportal.conf /etc/apache2/sites-enabled/
 RUN chown root: /etc/apache2/sites-enabled/httpd-pivportal.conf && chmod 755 /etc/apache2/sites-enabled/httpd-pivportal.conf
 
-# SSL CA Certificate For Client Cert
-RUN openssl genrsa -out /etc/ssl/private/pivportalClientCA.key 4096
-RUN openssl req -new -x509 -subj "/C=US/ST=Oregon/L=Portland/O=IT/CN=pivportalclientCA" -days 3650 -key /etc/ssl/private/pivportalClientCA.key -out /etc/ssl/private/pivportalClientCA.crt
-
-# SSL Create the Client Key and CSR
-RUN openssl genrsa -out /etc/ssl/private/pivportalClient.key 1024
-RUN openssl req -new -subj "/C=US/ST=Oregon/L=Portland/O=IT/CN=pivportalclient" -key /etc/ssl/private/pivportalClient.key -out /etc/ssl/private/pivportalClient.csr
-
-# SSL Sign the client certificate with our CA cert.
-RUN openssl x509 -req -days 3650 -in /etc/ssl/private/pivportalClient.csr -CA /etc/ssl/private/pivportalClientCA.crt -CAkey /etc/ssl/private/pivportalClientCA.key -set_serial 01 -out /etc/ssl/private/pivportalClient.crt
-RUN cat /etc/ssl/private/pivportalClient.key /etc/ssl/private/pivportalClient.crt > /etc/ssl/private/pivportalClient.pem
-
 # SSL Server Cert
 RUN openssl req -new -nodes -x509 -subj "/C=US/ST=Oregon/L=Portland/O=IT/CN=testhost" -days 3650 -keyout /etc/ssl/private/pivportal.key -out /etc/ssl/private/pivportal.crt -extensions v3_ca || true
 RUN chown pivportal: /etc/ssl/private/pivportal* && chmod 440 /etc/ssl/private/pivportal*
@@ -52,6 +40,8 @@ COPY ./pivportal-server.conf /etc/
 RUN chown pivportal: /etc/pivportal-server.conf && chmod 440 /etc/pivportal-server.conf
 
 # Entry Point
+COPY ./setup-initial-client-certs.sh /sbin/
 COPY ./docker-entrypoint.sh /sbin/
-RUN chmod 755 /sbin/docker-entrypoint.sh
+RUN chmod 755 /sbin/docker-entrypoint.sh /sbin/setup-initial-client-certs.sh
+RUN chown root: /sbin/docker-entrypoint.sh /sbin/setup-initial-client-certs.sh
 ENTRYPOINT ["/sbin/docker-entrypoint.sh"]
