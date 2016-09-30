@@ -51,3 +51,35 @@ class TestCli(unittest.TestCase):
         authorized = False
         auth_requests = [{ "username": username, "requestid": requestid, "authorized": authorized},]
         assert pivportal.cli.is_duplicate_register(username, requestid, auth_requests) == True
+
+    def test_request_list_invaliduser(self):
+        pivportal.cli.dn_to_username = {'test_dn1': "testuser1"}
+        result = pivportal.cli.app.test_client().post("/api/rest/request/list", headers={'SSL_CLIENT_S_DN': 'test_dn9'})
+        assert result.status_code == 401
+
+    def test_request_list(self):
+        pivportal.cli.dn_to_username = {'test_dn1': "testuser1"}
+        result = pivportal.cli.app.test_client().post("/api/rest/request/list", headers={'SSL_CLIENT_S_DN': 'test_dn1'})
+        assert result.status_code == 200
+
+    def test_request_register_badrequestid(self):
+        pivportal.cli.dn_to_username = {'test_dn1': "testuser1"}
+        result = pivportal.cli.app.test_client().post("/api/client/request/register", data={'username': 'testuser', 'requestid': '234567890123456'})
+        print(result)
+        assert result.status_code == 400
+
+    def test_request_register_nousername(self):
+        pivportal.cli.dn_to_username = {'test_dn1': "testuser1"}
+        result = pivportal.cli.app.test_client().post("/api/client/request/register", data={'requestid': '234567890123456'})
+        print(result)
+        assert result.status_code == 400
+
+    def test_request_register_norequestid(self):
+        pivportal.cli.dn_to_username = {'test_dn1': "testuser1"}
+        result = pivportal.cli.app.test_client().post("/api/client/request/register", data={'username': 'testuser'})
+        assert result.status_code == 400
+
+    def test_request_register(self):
+        pivportal.cli.dn_to_username = {'test_dn1': "testuser1"}
+        result = pivportal.cli.app.test_client().post("/api/client/request/register", data={'username': 'testuser', 'requestid': '1234567890123456'})
+        assert result.status_code == 200
