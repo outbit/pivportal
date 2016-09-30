@@ -1,5 +1,6 @@
 import unittest
 import pivportal.cli
+import json
 
 
 class TestCli(unittest.TestCase):
@@ -89,11 +90,9 @@ class TestCli(unittest.TestCase):
         pivportal.cli.app.test_client().post("/api/client/request/register", data={'username': 'testuser', 'requestid': '1234567890123456'})
         result = pivportal.cli.app.test_client().post("/api/client/request/status", data={'username': 'testuser', 'requestid': '1234567890123456'})
         assert result.status_code == 401
-"""
+
     def test_request_auth(self):
         pivportal.cli.dn_to_username = {'test_dn1': "testuser1"}
         pivportal.cli.app.test_client().post("/api/client/request/register", data={'username': 'testuser1', 'requestid': '1234567890123456'})
-        result = pivportal.cli.app.test_client().post("/api/rest/request/auth", headers={'SSL_CLIENT_S_DN': 'test_dn1'}, data={'username': 'testuser1', 'requestid': '1234567890123456', 'authorized': True, 'client_ip': None})
-        print(result)
+        result = pivportal.cli.app.test_client().post("/api/rest/request/auth", headers={'SSL_CLIENT_S_DN': 'test_dn1'}, data=json.dumps({'username': 'testuser1', 'requestid': '1234567890123456', 'authorized': True, 'client_ip': None}), content_type='application/json')
         assert result.status_code == 200
-"""
