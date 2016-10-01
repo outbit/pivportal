@@ -11,7 +11,7 @@ before_install:
     - sudo apt-get install -y libpam0g-dev
     - sudo apt-get install -y libcurl4-openssl-dev
     - sudo apt-get install -y glib2.0 # maybe just libglib2.0-dev, not sure
-    - sudo apt-get install -y libgtest-dev gcc g++
+    - sudo apt-get install -y libgtest0 libgtest-dev gcc g++
 
 # Old debian systems:
 #    - sudo apt-get install -y libpam0g-dev
