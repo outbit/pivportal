@@ -2,7 +2,7 @@ CC = gcc
 CPP = g++
 LD = ld
 
-CFLAGS = -fPIC -fno-stack-protector -I/usr/include/glib-2.0/ -I/usr/lib64/glib-2.0/include/
+CFLAGS = -fPIC -fno-stack-protector -I/usr/include/glib-2.0/ -I/usr/lib64/glib-2.0/include/ -I/usr/lib/x86_64-linux-gnu/glib-2.0/include/
 LFLAGS = -x --shared -lcurl -lglib-2.0 --build-id
 
 TARGET = pam_pivportal
@@ -21,7 +21,7 @@ install:
 $(TARGET)_test: $(TARGET).c $(TARGET)_test.c
 	# yum install gtest gtest-devel gcc gcc-c++
 	# apt-get install -y libgtest-dev gcc c++
-	$(CPP) -lcurl -lglib-2.0 -lgtest -o $(TARGET)_test -I/usr/include/glib-2.0/ -I/usr/lib64/glib-2.0/include/ $(TARGET)_test.c $(TARGET).c
+	$(CPP) -lcurl -lglib-2.0 -lgtest -o $(TARGET)_test -I/usr/include/glib-2.0/ -I/usr/lib64/glib-2.0/include/ -I/usr/lib/x86_64-linux-gnu/glib-2.0/include/ $(TARGET)_test.c $(TARGET).c
 
 test: $(TARGET)_test
 	./$(TARGET)_test
