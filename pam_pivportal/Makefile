@@ -18,10 +18,10 @@ $(TARGET): $(TARGET).o
 install:
 	sudo cp -f $(TARGET).so /usr/lib64/security/ && chown root:root /usr/lib64/security/$(TARGET).so && chmod 755 /usr/lib64/security/$(TARGET).so
 
-$(TARGET)_test: $(TARGET).c $(TARGET)_test.c
+$(TARGET)_test: $(TARGET).c $(TARGET)_test.cpp
 	# yum install gtest gtest-devel gcc gcc-c++
 	# apt-get install -y libgtest-dev gcc c++
-	$(CPP) -o $(TARGET)_test -L/usr/lib/x86_64-linux-gnu/ -I/usr/include/glib-2.0/ -I/usr/lib64/glib-2.0/include/ -I/usr/lib/x86_64-linux-gnu/glib-2.0/include/ -lcurl -lglib-2.0 -lgtest $(TARGET)_test.c $(TARGET).c
+	$(CPP) -o $(TARGET)_test -L/usr/local/lib/ -L/usr/lib/x86_64-linux-gnu/ -I/usr/include/glib-2.0/ -I/usr/lib64/glib-2.0/include/ -I/usr/lib/x86_64-linux-gnu/glib-2.0/include/ -lcurl -lglib-2.0 -lgtest -lpthread $(TARGET)_test.cpp $(TARGET).c
 
 test: $(TARGET)_test
 	./$(TARGET)_test
