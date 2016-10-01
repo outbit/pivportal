@@ -11,7 +11,7 @@ before_install:
     - sudo apt-get install -y libpam0g-dev
     - sudo apt-get install -y libcurl4-openssl-dev
     - sudo apt-get install -y glib2.0 # maybe just libglib2.0-dev, not sure
-    - sudo apt-get install -y gcc g++
+    - sudo apt-get install -y gcc g++ cmake
     - sudo apt-get install -y libgtest-dev
     - "cd /usr/src/gtest && sudo cmake . && sudo cmake --build . && sudo mv libg* /usr/local/lib/ ; cd -"
 
@@ -32,8 +32,8 @@ install:
 script:
     - 'export PYTHONPATH="${PYTHONPATH}:./pivportal/lib"'
     - "coverage run --source=pivportal $(which nosetests) -w pivportal/test/"
-    - "cd pam_pivportal/ && make clean && make"
-    - "cd pam_pivportal/ && make clean && make test"
+    - "cd pam_pivportal/ && make clean && make; cd -"
+    - "cd pam_pivportal/ && make clean && make test; cd -"
 
 after_success:
     - coveralls
