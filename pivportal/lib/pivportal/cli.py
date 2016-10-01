@@ -9,8 +9,13 @@ import json
 import yaml
 import time
 
+import jwt
+import datetime
+from functools import wraps
+
 
 app = Flask(__name__)
+app.secret_key = os.urandom(24)
 
 # [{ "username": X, "requestid": X, "client_ip": X, "authorized": False, "time": time.time()},]
 auth_requests = []
@@ -27,7 +32,7 @@ def dn_is_valid(dn):
 
 
 def username_is_valid(username):
-    if re.match(r'^[a-zA-Z0-9_\-]+$', username):
+    if re.match(r'^[a-zA-Z0-9_\-]+$', username) and username in dn_to_username.values():
         return True
     return False
 
@@ -53,23 +58,96 @@ def is_duplicate_register(username, requestid, auth_requests):
     return False
 
 
+def create_token(user):
+    global app
+    payload = {
+        # subject
+        'sub': user,
+        #issued at
+        'iat': datetime.datetime.utcnow(),
+        #expiry
+        'exp': datetime.datetime.utcnow() + datetime.timedelta(days=1)
+    }
+
+    token = jwt.encode(payload, app.secret_key, algorithm='HS256')
+    return token.decode('unicode_escape')
+
+
+def parse_token(token):
+    global app
+    return jwt.decode(token, app.secret_key, algorithms='HS256')
+
+
+def token_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        g = f.func_globals
+
+        if not request.headers.get('Authorization'):
+            return Response(response="Missing authorization header", status=401)
+        try:
+            payload = parse_token(request.headers.get('Authorization').split()[1])
+        except jwt.DecodeError:
+            return Response(response="Token is invalid", status=401)
+        except jwt.ExpiredSignature:
+            return Response(response="Token has expired", status=401)
+
+        # Set username for decorated func
+        g["username"] = payload['sub']
+
+        return f(*args, **kwargs)
+    return decorated_function
+
+
+def valid_client_cert_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        g = f.func_globals
+
+        if not request.headers.get('SSL_CLIENT_S_DN'):
+            return Response(response="Missing Client DN Header", status=401)
+
+        # Get Client DN
+        user_dn = request.headers.get('SSL_CLIENT_S_DN')
+
+        # Valid DN
+        if not dn_is_valid(user_dn):
+            return Response(response=json.dumps({"response": "  Invalid Request DN"}), status=400, mimetype="application/json")
+
+        # Authorize User
+        if user_dn not in dn_to_username:
+            return Response(response=json.dumps({"response": "Authentication Failure"}), status=401, mimetype="application/json")
+
+        username = dn_to_username[user_dn]
+
+        # Verify Request
+        if not username_is_valid(username):
+            return Response(response=json.dumps({"response": "  Invalid Request Username"}), status=400, mimetype="application/json")
+
+        # Set username for decorated func
+        g["username"] = username
+
+        return f(*args, **kwargs)
+    return decorated_function
+
+
+@app.route('/api/rest/user/login', methods = ['POST'])
+@valid_client_cert_required
+def request_login():
+    dat = None
+    status = 200
+
+    # Authenticate user, return a token
+    dat = json.dumps({ "token": create_token(username) })
+
+    # http response
+    return(Response(response=dat, status=status, mimetype="application/json"))
+
+
 @app.route('/api/rest/request/list', methods = ['POST'])
+@token_required
+@valid_client_cert_required
 def request_list():
-    user_dn = request.headers.get('SSL_CLIENT_S_DN')
-
-    # Valid DN
-    if not dn_is_valid(user_dn):
-        return Response(response=json.dumps({"response": "  invalid request"}), status=400, mimetype="application/json")
-
-    # Authorize User
-    if user_dn not in dn_to_username:
-        return Response(response=json.dumps({"response": "Authentication Failure"}), status=401, mimetype="application/json")
-
-    username = dn_to_username[user_dn]
-
-    # Verify Request
-    if not username_is_valid(username):
-        return Response(response=json.dumps({"response": "  invalid request"}), status=400, mimetype="application/json")
 
     request_list = []
     count = 0
@@ -86,28 +164,20 @@ def request_list():
 
 
 @app.route('/api/rest/request/auth', methods = ['POST'])
+@token_required
+@valid_client_cert_required
 def request_auth():
     indata = request.get_json()
-    user_dn = request.headers.get('SSL_CLIENT_S_DN')
-
-    # Valid DN
-    if not dn_is_valid(user_dn):
-        return Response(response=json.dumps({"response": "  invalid request"}), status=400, mimetype="application/json")
-
-    # Authorize User
-    if user_dn not in dn_to_username:
-        return Response(response=json.dumps({"response": "Authentication Failure"}), status=401, mimetype="application/json")
 
     # Verify Request
     if "requestid" not in indata or "client_ip" not in indata or "authorized" not in indata:
-        return Response(response=json.dumps({"response": "  invalid request"}), status=400, mimetype="application/json")
+        return Response(response=json.dumps({"response": "  invalid request missing data"}), status=400, mimetype="application/json")
 
-    username = dn_to_username[user_dn]
     requestid = indata['requestid']
     client_ip = indata['client_ip']
     authorized = indata['authorized']
 
-    if not username_is_valid(username) or not requestid_is_valid(requestid) or not ip_is_valid(client_ip):
+    if not requestid_is_valid(requestid) or not ip_is_valid(client_ip):
         return Response(response=json.dumps({"response": "  invalid request"}), status=400, mimetype="application/json")
 
     # Authenticate Request

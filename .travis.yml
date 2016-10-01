@@ -22,7 +22,7 @@ before_install:
 #    - sudo apt-get install libcurl4-gnutls-dev
 
 install:
-    - pip install nose flask coveralls PyYAML
+    - pip install nose flask coveralls PyYAML PyJWT
 
 # Run Tests
 script:

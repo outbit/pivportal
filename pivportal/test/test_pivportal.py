@@ -15,6 +15,7 @@ class TestCli(unittest.TestCase):
         assert pivportal.cli.username_is_valid("%#DW;") == False
 
     def test_username_is_valid(self):
+        pivportal.cli.dn_to_username = {'test_dn1': "test_user-123"}
         assert pivportal.cli.username_is_valid("test_user-123") == True
 
     def test_requestid_is_valid(self):
@@ -60,12 +61,20 @@ class TestCli(unittest.TestCase):
 
     def test_request_list(self):
         pivportal.cli.dn_to_username = {'test_dn1': "testuser1"}
-        result = pivportal.cli.app.test_client().post("/api/rest/request/list", headers={'SSL_CLIENT_S_DN': 'test_dn1'})
+        token_raw = pivportal.cli.app.test_client().post("/api/rest/user/login", headers={'SSL_CLIENT_S_DN': 'test_dn1'})
+        token = "%s %s" % ("Authorization", json.loads(token_raw.get_data())["token"])
+        result = pivportal.cli.app.test_client().post("/api/rest/request/list", headers={'SSL_CLIENT_S_DN': 'test_dn1', "Authorization": token})
         assert result.status_code == 200
+
+    def test_request_register_usernotfound(self):
+        pivportal.cli.dn_to_username = {'test_dn1': "testuser1"}
+        result = pivportal.cli.app.test_client().post("/api/client/request/register", data={'username': 'unknownuser', 'requestid': '234567890123456'})
+        print(result)
+        assert result.status_code == 400
 
     def test_request_register_badrequestid(self):
         pivportal.cli.dn_to_username = {'test_dn1': "testuser1"}
-        result = pivportal.cli.app.test_client().post("/api/client/request/register", data={'username': 'testuser', 'requestid': '234567890123456'})
+        result = pivportal.cli.app.test_client().post("/api/client/request/register", data={'username': 'testuser1', 'requestid': '234567890123456'})
         print(result)
         assert result.status_code == 400
 
@@ -77,22 +86,23 @@ class TestCli(unittest.TestCase):
 
     def test_request_register_norequestid(self):
         pivportal.cli.dn_to_username = {'test_dn1': "testuser1"}
-        result = pivportal.cli.app.test_client().post("/api/client/request/register", data={'username': 'testuser'})
+        result = pivportal.cli.app.test_client().post("/api/client/request/register", data={'username': 'testuser1'})
         assert result.status_code == 400
 
     def test_request_register(self):
         pivportal.cli.dn_to_username = {'test_dn1': "testuser1"}
-        result = pivportal.cli.app.test_client().post("/api/client/request/register", data={'username': 'testuser', 'requestid': '1234567890123456'})
+        result = pivportal.cli.app.test_client().post("/api/client/request/register", data={'username': 'testuser1', 'requestid': '1234567890123456'})
         assert result.status_code == 200
 
     def test_request_status_notauthed(self):
         pivportal.cli.dn_to_username = {'test_dn1': "testuser1"}
-        pivportal.cli.app.test_client().post("/api/client/request/register", data={'username': 'testuser', 'requestid': '1234567890123456'})
-        result = pivportal.cli.app.test_client().post("/api/client/request/status", data={'username': 'testuser', 'requestid': '1234567890123456'})
+        pivportal.cli.app.test_client().post("/api/client/request/register", data={'username': 'testuser1', 'requestid': '1234567890123456'})
+        result = pivportal.cli.app.test_client().post("/api/client/request/status", data={'username': 'testuser1', 'requestid': '1234567890123456'})
         assert result.status_code == 401
 
     def test_request_auth(self):
         pivportal.cli.dn_to_username = {'test_dn1': "testuser1"}
-        pivportal.cli.app.test_client().post("/api/client/request/register", data={'username': 'testuser1', 'requestid': '1234567890123456'})
-        result = pivportal.cli.app.test_client().post("/api/rest/request/auth", headers={'SSL_CLIENT_S_DN': 'test_dn1'}, data=json.dumps({'username': 'testuser1', 'requestid': '1234567890123456', 'authorized': True, 'client_ip': None}), content_type='application/json')
+        token_raw = pivportal.cli.app.test_client().post("/api/rest/user/login", headers={'SSL_CLIENT_S_DN': 'test_dn1'})
+        token = "%s %s" % ("Authorization", json.loads(token_raw.get_data())["token"])
+        result = pivportal.cli.app.test_client().post("/api/rest/request/auth", headers={'SSL_CLIENT_S_DN': 'test_dn1', "Authorization": token}, data=json.dumps({'username': 'testuser1', 'requestid': '1234567890123456', 'authorized': True, 'client_ip': None}), content_type='application/json')
         assert result.status_code == 200
