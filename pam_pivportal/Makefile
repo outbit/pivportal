@@ -24,4 +24,6 @@ rpm:
 	scons
 
 clean:
-	rm -f $(TARGET).o $(TARGET)_test $(TARGET).so
+	rm -f $(TARGET).o $(TARGET)_test $(TARGET).so *.rpm *.spec *.tar.gz
+	rm -rf pam_pivportal-*/
+	rm -rf rpmtemp/
