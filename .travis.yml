@@ -12,7 +12,6 @@ before_install:
     - sudo apt-get install -y libcurl4-openssl-dev
     - sudo apt-get install -y glib2.0 # maybe just libglib2.0-dev, not sure
     - sudo apt-get install -y gcc g++
-    - sudo apt-get -qq update
     - sudo apt-get install -y libgtest-dev
     - "cd /usr/src/gtest && sudo cmake . && sudo cmake --build . && sudo mv libg* /usr/local/lib/ ; cd -"
 
