@@ -23,6 +23,12 @@ test:
 rpm:
 	scons
 
+dpkg:
+	# apt-get install alien
+	alien *.x86_64.rpm
+	# mkdir -p /usr/lib64/
+	# ln -s /lib/x86_64-linux-gnu/security/ /usr/lib64/security
+
 clean:
 	rm -f $(TARGET).o $(TARGET)_test $(TARGET).so *.rpm *.spec *.tar.gz
 	rm -rf pam_pivportal-*/
