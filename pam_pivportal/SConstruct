@@ -1,0 +1,15 @@
+# Requires: pip install scons && yum install rpm-build
+
+env = Environment(tools=['default', 'packaging'])
+env.Install('/usr/bin/', "pam_pivportal.so")
+env.Package(
+             NAME           = 'pam_pivportal',
+             VERSION        = '0.0.4',
+             PACKAGEVERSION = 0,
+             PACKAGETYPE    = 'rpm',
+             LICENSE        = 'mit',
+             SUMMARY        = 'pam_pivportal is a pam module for pivportal',
+             DESCRIPTION    = 'pam_pivportal is a pam module for pivportal',
+             X_RPM_GROUP    = 'Application/Security',
+             SOURCE_URL     = 'https://github.com/starboarder2001/pam_pivportal.tar.gz'
+        )

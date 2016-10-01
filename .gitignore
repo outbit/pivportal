@@ -41,3 +41,8 @@
 *.egg-info
 *.tar.gz
 *.coverage
+
+# SCONS
+.sconsign.dblite
+*.spec
+pam_pivportal/pam_pivportal-*/

@@ -2,7 +2,7 @@ CC = gcc
 LD = ld
 
 CFLAGS = -fPIC -fno-stack-protector -I/usr/include/glib-2.0/ -I/usr/lib64/glib-2.0/include/
-LFLAGS = -x --shared -lcurl -lglib-2.0
+LFLAGS = -x --shared -lcurl -lglib-2.0 --build-id
 
 TARGET = pam_pivportal
 
@@ -19,6 +19,9 @@ install:
 
 test:
 	$(CC) -o $(TARGET)_test $(TARGET)_test.c -lpam -lpam_misc -lcurl && ./$(TARGET)_test nobody
+
+rpm:
+	scons
 
 clean:
 	rm -f $(TARGET).o $(TARGET)_test $(TARGET).so
