@@ -7,7 +7,7 @@ Build and Installation
 Debian
 
 ```bash
-$ sudo apt-get install -y libpam0g-dev libcurl4-openssl-dev glib2-devel
+$ sudo apt-get install -y libpam0g-dev libcurl4-openssl-dev glib2.0
 $ make && make install
 ```
 
