@@ -3,7 +3,7 @@ CPP = g++
 LD = ld
 
 CFLAGS = -fPIC -fno-stack-protector -I/usr/include/glib-2.0/ -I/usr/lib64/glib-2.0/include/ -I/usr/lib/x86_64-linux-gnu/glib-2.0/include/
-LFLAGS = -x --shared -lcurl -lglib-2.0 --build-id
+LFLAGS = -x --shared -lcurl -lglib-2.0 --build-id -L/usr/lib/x86_64-linux-gnu/
 
 TARGET = pam_pivportal
 
