@@ -10,6 +10,7 @@ before_install:
     - sudo apt-get -qq update
     - sudo apt-get install -y libpam0g-dev
     - sudo apt-get install -y libcurl4-openssl-dev
+    - sudo apt-get install -y libgtest-dev gcc c++
 
 # Old debian systems:
 #    - sudo apt-get install -y libpam0g-dev
@@ -28,7 +29,7 @@ install:
 script:
     - 'export PYTHONPATH="${PYTHONPATH}:./pivportal/lib"'
     - "coverage run --source=pivportal $(which nosetests) -w pivportal/test/"
-#    - "cd pam_pivportal/ && make clean && make && make test"
+    - "cd pam_pivportal/ && make clean && make && make test"
 
 after_success:
     - coveralls

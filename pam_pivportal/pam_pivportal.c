@@ -1,18 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <security/pam_appl.h>
-#include <security/pam_modules.h>
-
-#include <stdio.h>
-#include <curl/curl.h>
-
-#include <unistd.h>
-#include <glib.h>
-
-
-#define PIVPORTAL_CONFIG_FILE "/etc/pivportal.conf"
-#define MAX_STR 255
+#include "pam_pivportal.h"
 
 
 char g_server_ip[MAX_STR] = {0};
@@ -22,10 +8,10 @@ int g_server_ssl_verify_host = 0;
 
 
 int read_config() {
-    GKeyFile *keyfile = 0;
-    GKeyFileFlags flags = 0;
-    GError *error = 0;
-    gchar *server_ip = 0, *server_port = 0, *client_ssl_cert;
+    GKeyFile *keyfile = (GKeyFile*)0;
+    GKeyFileFlags flags = (GKeyFileFlags)0;
+    GError *error = (GError*)0;
+    gchar *server_ip = NULL, *server_port = NULL, *client_ssl_cert = NULL;
 
     // Check If Config file exists, exit if it doesnt
     if ( 0 != access (PIVPORTAL_CONFIG_FILE, F_OK) ) {
@@ -34,7 +20,7 @@ int read_config() {
     }
 
     keyfile = (GKeyFile *)g_key_file_new();
-    flags = G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS;
+    flags = (GKeyFileFlags)(G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS);
 
     /*
     Example: /etc/pivportal.conf
@@ -98,7 +84,7 @@ char *randstring(size_t length) {
     srand(seed);
 
     if (length) {
-        randomString = malloc(sizeof(char) * (length +1));
+        randomString = (char*)malloc(sizeof(char) * (length +1));
 
         if (randomString) {            
             for (n = 0;n < length;n++) {            
@@ -116,8 +102,8 @@ char *randstring(size_t length) {
 
 int register_pivportal(const char *username, const char *requestid, const char *url, const char *client_ssl_cert, long verifyHost)
 {
-  CURL *curl = 0;
-  CURLcode res = 0;
+  CURL *curl = (CURL*)0;
+  CURLcode res = (CURLcode)0;
   char post_fields[MAX_STR] = {0};
   int ret = 1;
   long status_code = 401;
@@ -177,8 +163,8 @@ int register_pivportal(const char *username, const char *requestid, const char *
 
 int status_pivportal(const char *username, const char *requestid, const char *url, const char *client_ssl_cert, long verifyHost)
 {
-  CURL *curl = 0;
-  CURLcode res = 0;
+  CURL *curl = (CURL*)0;
+  CURLcode res = (CURLcode)0;
   char post_fields[MAX_STR] = {0};
   int ret = 1;
   long status_code = 401;

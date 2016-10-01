@@ -1,4 +1,5 @@
 CC = gcc
+CPP = g++
 LD = ld
 
 CFLAGS = -fPIC -fno-stack-protector -I/usr/include/glib-2.0/ -I/usr/lib64/glib-2.0/include/
@@ -17,17 +18,21 @@ $(TARGET): $(TARGET).o
 install:
 	sudo cp -f $(TARGET).so /usr/lib64/security/ && chown root:root /usr/lib64/security/$(TARGET).so && chmod 755 /usr/lib64/security/$(TARGET).so
 
-test:
-	$(CC) -o $(TARGET)_test $(TARGET)_test.c -lpam -lpam_misc -lcurl && ./$(TARGET)_test nobody
+$(TARGET)_test: $(TARGET).c $(TARGET)_test.c
+	# yum install gtest gtest-devel gcc gcc-c++
+	# apt-get install -y libgtest-dev gcc c++
+	$(CPP) -lcurl -lglib-2.0 -lgtest -o $(TARGET)_test -I/usr/include/glib-2.0/ -I/usr/lib64/glib-2.0/include/ $(TARGET)_test.c $(TARGET).c
+
+test: $(TARGET)_test
+	./$(TARGET)_test
 
 rpm:
 	scons
 
 dpkg:
 	# apt-get install alien
+	# mkdir -p /usr/lib64/ && ln -s /lib/x86_64-linux-gnu/security/ /usr/lib64/security
 	alien *.x86_64.rpm
-	# mkdir -p /usr/lib64/
-	# ln -s /lib/x86_64-linux-gnu/security/ /usr/lib64/security
 
 clean:
 	rm -f $(TARGET).o $(TARGET)_test $(TARGET).so *.rpm *.spec *.tar.gz
