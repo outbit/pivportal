@@ -10,7 +10,7 @@ before_install:
     - sudo apt-get -qq update
     - sudo apt-get install -y libpam0g-dev
     - sudo apt-get install -y libcurl4-openssl-dev
-    - sudo apt-get install -y libgtest-dev gcc c++
+    - sudo apt-get install -y libgtest-dev gcc g++
 
 # Old debian systems:
 #    - sudo apt-get install -y libpam0g-dev
