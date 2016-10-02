@@ -26,7 +26,7 @@ register_ticket_timeout = 60
 
 
 def dn_is_valid(dn):
-    if re.match(r'^[a-zA-Z0-9_\-,\(\):]+$', dn):
+    if re.match(r'^[a-zA-Z0-9_\-\,\(\)\+\=\:\s\. ]+$', dn):
         return True
     return False
 
@@ -112,11 +112,11 @@ def valid_client_cert_required(f):
 
         # Valid DN
         if not dn_is_valid(user_dn):
-            return Response(response=json.dumps({"response": "  Invalid Request DN"}), status=400, mimetype="application/json")
+            return Response(response=json.dumps({"response": "  Invalid Request DN %s" % user_dn}), status=400, mimetype="application/json")
 
         # Authorize User
         if user_dn not in dn_to_username:
-            return Response(response=json.dumps({"response": "Authentication Failure"}), status=401, mimetype="application/json")
+            return Response(response=json.dumps({"response": "Authentication Failure for DN %s" % user_dn}), status=401, mimetype="application/json")
 
         username = dn_to_username[user_dn]
 
@@ -238,6 +238,7 @@ class Cli(object):
     """ Command Line Interface for pivportal """
     # Parse CLI Arguments
     def __init__(self):
+        global dn_to_username
         parser = optparse.OptionParser()
         parser.add_option("-p", "--port", dest="port",
                               help="port",
