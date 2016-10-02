@@ -9,6 +9,9 @@ Secure Linux sudo access using a PIV/CAC/SmartCard/x509 Client Certificate.
 [![Coverage Status](https://coveralls.io/repos/starboarder2001/pivportal/badge.svg?branch=develop&service=github)](https://coveralls.io/github/starboarder2001/pivportal?branc    h=develop)
 [![Gitter IM](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/starboarder2001/pivportal)
 
+![alt tag](https://raw.githubusercontent.com/starboarder2001/pivportal/images/pivportal_web.png)
+![alt tag](https://raw.githubusercontent.com/starboarder2001/pivportal/images/pivportal_client.png)
+
 Installing pivportal Server
 ======
 
