@@ -1,7 +1,7 @@
 pivportal
 ===========
 
-Secure Linux sudo access using a PIV/CAC/SmartCard/x509 Client Certificate.
+Secure Linux sudo access using a PIV, CAC, SmartCard, or x509 Client Certificate.
 
 [![Build Status](https://secure.travis-ci.org/starboarder2001/pivportal.png?branch=master "ansible-docs latest build")](http://travis-ci.org/starboarder2001/pivportal)
 [![PIP Version](https://img.shields.io/pypi/v/pivportal.svg "ansible-docs PyPI version")](https://pypi.python.org/pypi/pivportal)
