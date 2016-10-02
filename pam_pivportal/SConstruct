@@ -4,7 +4,7 @@ env = Environment(tools=['default', 'packaging'])
 env.Install('/usr/lib64/security/', "pam_pivportal.so")
 env.Package(
              NAME           = 'pam_pivportal',
-             VERSION        = '0.0.4',
+             VERSION        = '0.0.5',
              PACKAGEVERSION = 0,
              PACKAGETYPE    = 'rpm',
              LICENSE        = 'mit',
