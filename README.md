@@ -26,12 +26,12 @@ Configuring pivportal Server
 docker run -d -p 80:80 -p 442:442 -p 443:443 starboarder2001/pivportal
 ```
 
-In the running docker instance, you are required to:
+In the running docker instance, **you are required to**:
 
 - Copy CA and intermediate certificates (in x509 PEM format) in /etc/ssl/private/pivportalCA.crt.
 - Edit /etc/pivportal-server.conf and add the Designated Names you authorize to use the application. The file includes examples.
 
-In the running docker instance, it is recommended to:
+In the running docker instance, **it is recommended to**:
 
 - Copy the CRL (certificate revokation list) to /etc/ssl/private/pivportal.crl and uncomment the line in /etc/apache2/sites-enabled/httpd-pivportal.conf.
 - Copy your valid SSL public certificate to /etc/ssl/private/pivportal.crt.
