@@ -18,6 +18,7 @@
     <body>
         <div id="header">
             <div id="logo">pivportal</div>
+            <div id="welcome" ng-show="{{username !== undefined}}">Welcome {{username}}</div>
         </div>
         <div id="content" ng-view>
         </div>

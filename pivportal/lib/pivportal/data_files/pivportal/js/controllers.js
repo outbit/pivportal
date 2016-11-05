@@ -4,7 +4,18 @@ pivportalControllers.controller('pivportalLoginCtrl', ['$auth', '$scope', '$http
   function ($auth, $scope, $http, toaster) {
     $scope.login = function() {
       $auth.login().then(function(data) {
-        console.log(data)
+          console.log(data)
+          $http.post('/api/rest/user/info').success(function (data) {
+              $scope.username = data.username;
+          }).error(function (data) {
+              toaster.pop({
+                type: 'error',
+                title: 'User Info Failed',
+                body: data,
+                showCloseButton: true,
+                });
+              console.log(data);
+          });
       })
       .catch(function(response){ // If login is unsuccessful, display relevant error message.
                console.log(response.data)

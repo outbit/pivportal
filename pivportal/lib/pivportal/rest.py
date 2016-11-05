@@ -14,7 +14,7 @@ app.secret_key = os.urandom(24)
 
 @app.route('/api/rest/user/login', methods = ['POST'])
 @pivportal.security.valid_client_cert_required
-def request_login():
+def user_login():
     dat = None
     status = 200
 
@@ -23,6 +23,12 @@ def request_login():
 
     # http response
     return(Response(response=dat, status=status, mimetype="application/json"))
+
+@app.route('/api/rest/user/info', methods = ['POST'])
+@pivportal.security.token_required(app.secret_key)
+@pivportal.security.valid_client_cert_required
+def user_info():
+    return Response(response=json.dumps({"response": "success", "username": username}), status=200, mimetype="application/json")
 
 
 @app.route('/api/rest/request/list', methods = ['POST'])
