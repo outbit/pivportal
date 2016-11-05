@@ -24,6 +24,7 @@ def user_login():
     # http response
     return(Response(response=dat, status=status, mimetype="application/json"))
 
+
 @app.route('/api/rest/user/info', methods = ['POST'])
 @pivportal.security.token_required(app.secret_key)
 @pivportal.security.valid_client_cert_required

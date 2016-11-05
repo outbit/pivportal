@@ -55,6 +55,18 @@ class TestCli(unittest.TestCase):
         auth_requests = [{ "username": username, "requestid": requestid, "authorized": authorized},]
         assert pivportal.security.is_duplicate_register(username, requestid, auth_requests) == True
 
+    def test_user_auth(self):
+        pivportal.security.dn_to_username = {'test_dn1': "testuser1"}
+        result = pivportal.rest.app.test_client().post("/api/rest/user/login", headers={'SSL_CLIENT_S_DN': 'test_dn1'})
+        assert result.status_code == 200
+
+    def test_user_info(self):
+        pivportal.security.dn_to_username = {'test_dn1': "testuser1"}
+        token_raw = pivportal.rest.app.test_client().post("/api/rest/user/login", headers={'SSL_CLIENT_S_DN': 'test_dn1'})
+        token = "%s %s" % ("Authorization", json.loads(token_raw.get_data())["token"])
+        result = pivportal.rest.app.test_client().post("/api/rest/user/info", headers={'SSL_CLIENT_S_DN': 'test_dn1', "Authorization": token})
+        assert result.status_code == 200
+
     def test_request_list_invaliduser(self):
         pivportal.security.dn_to_username = {'test_dn1': "testuser1"}
         result = pivportal.rest.app.test_client().post("/api/rest/request/list", headers={'SSL_CLIENT_S_DN': 'test_dn9'})
