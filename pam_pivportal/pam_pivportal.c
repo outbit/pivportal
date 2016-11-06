@@ -67,14 +67,12 @@ int read_config() {
 }
 
 
-size_t write_curl_data(void *buffer, size_t size, size_t nmemb, void *userp)
-{
+size_t write_curl_data(void *buffer, size_t size, size_t nmemb, void *userp) {
    return size * nmemb;
 }
 
 
 char *randstring(size_t length) {
-
     static char charset[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     char *randomString = NULL;
     int n = 0;
@@ -91,7 +89,6 @@ char *randstring(size_t length) {
                 key = rand() % (int)(sizeof(charset) -1);
                 randomString[n] = charset[key];
             }
-
             randomString[length] = '\0';
         }
     }
@@ -100,8 +97,7 @@ char *randstring(size_t length) {
 }
 
 
-int register_pivportal(const char *username, const char *requestid, const char *url, const char *client_ssl_cert, long verifyHost)
-{
+int register_pivportal(const char *username, const char *requestid, const char *url, const char *client_ssl_cert, long verifyHost) {
   CURL *curl = (CURL*)0;
   CURLcode res = (CURLcode)0;
   char post_fields[MAX_STR] = {0};
@@ -161,8 +157,7 @@ int register_pivportal(const char *username, const char *requestid, const char *
 }
 
 
-int status_pivportal(const char *username, const char *requestid, const char *url, const char *client_ssl_cert, long verifyHost)
-{
+int status_pivportal(const char *username, const char *requestid, const char *url, const char *client_ssl_cert, long verifyHost) {
   CURL *curl = (CURL*)0;
   CURLcode res = (CURLcode)0;
   char post_fields[MAX_STR] = {0};

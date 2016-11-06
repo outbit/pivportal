@@ -21,6 +21,20 @@ TEST (randstring, successisok) {
 }
 
 
+TEST (pam_sm_setcred, successisok) {
+    int retval = 0;
+    retval = pam_sm_setcred(NULL, 0, 0, NULL);
+    ASSERT_EQ(retval, 0);
+}
+
+
+TEST (pam_sm_acct_mgmt, successisok) {
+    int retval = 0;
+    retval = pam_sm_acct_mgmt(NULL, 0, 0, NULL);
+    ASSERT_EQ(retval, 0);
+}
+
+
 int main(int argc, char *argv[]) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
