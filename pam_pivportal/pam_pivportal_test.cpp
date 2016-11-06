@@ -13,6 +13,14 @@ TEST (write_curl_data, successisok) {
 }
 
 
+TEST (randstring, successisok) {
+    char *randstr = NULL;
+    randstr = randstring(10);
+    ASSERT_EQ(strlen(randstr), 10);
+    free(randstr);
+}
+
+
 int main(int argc, char *argv[]) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
