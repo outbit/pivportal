@@ -5,6 +5,10 @@ div {
     font-family: "Myriad Pro", "Helvetica", "Arial", sans-serif;
 }
 
+body {
+    background-color: #E2DEE4;
+}
+
 table, th, td, tr {
     border: 1px solid white;
     text-align: left;
@@ -59,7 +63,7 @@ tr:nth-child(even) {
 }
 
 #header {
-    background-color: #4B586B;
+    background-color: #000001;
     text-align: left;
     width: 100%;
     height: 44px;
