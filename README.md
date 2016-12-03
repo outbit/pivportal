@@ -70,3 +70,8 @@ port=442
 client_ssl_cert=/etc/ssl/certs/pivportalClient.pem
 ssl_verify_host=0
 ```
+
+License
+======
+
+pivportal is released under the [MIT License](LICENSE.md).
