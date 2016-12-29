@@ -224,7 +224,7 @@ PAM_EXTERN int pam_sm_authenticate( pam_handle_t *pamh, int flags,int argc, cons
     memset(g_client_ssl_cert, 0, sizeof(g_client_ssl_cert));
     snprintf(g_server_ip, sizeof(g_server_ip), "%s", "127.0.0.1");
     snprintf(g_server_port, sizeof(g_server_port), "%s", "442");
-    snprintf(g_server_port, sizeof(g_server_port), "%s", "/etc/ssl/certs/pivportalClient.pem");
+    snprintf(g_client_ssl_cert, sizeof(g_client_ssl_cert), "%s", "/etc/ssl/certs/pivportalClient.pem");
 
     read_config();
 
