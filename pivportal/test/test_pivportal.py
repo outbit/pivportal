@@ -130,24 +130,26 @@ class TestCli(unittest.TestCase):
         token_raw = pivportal.rest.app.test_client().post("/api/rest/user/login", headers={'SSL_CLIENT_S_DN': 'test_dn1'})
         print(token_raw)
         token = "%s %s" % ("Authorization", json.loads(token_raw.get_data())["token"])
-        result = pivportal.rest.app.test_client().post("/api/rest/request/auth", headers={'SSL_CLIENT_S_DN': 'test_dn1', "Authorization": token}, data=json.dumps({'username': 'testuser1', 'requestid': '1234567890123456', 'authorized': True, 'client_ip': None}), content_type='application/json')
+        result_auth = pivportal.rest.app.test_client().post("/api/rest/request/auth", headers={'SSL_CLIENT_S_DN': 'test_dn1', "Authorization": token}, data=json.dumps({'username': 'testuser1', 'requestid': '1234567890123456', 'authorized': True, 'client_ip': "127.0.0.1"}), content_type='application/json')
+        print(result_auth)
 
         # Status on request
-        result = pivportal.rest.app.test_client().post("/api/client/request/status", data={'username': 'testuser1', 'requestid': '1234567890123456'})
-        assert result.status_code == 200
+        result_status = pivportal.rest.app.test_client().post("/api/client/request/status", data={'username': 'testuser1', 'requestid': '1234567890123456'})
+        print(result_status)
+        assert result_status.status_code == 200
 
     def test_request_auth(self):
         pivportal.security.dn_to_username = {'test_dn1': "testuser1"}
         token_raw = pivportal.rest.app.test_client().post("/api/rest/user/login", headers={'SSL_CLIENT_S_DN': 'test_dn1'})
         print(token_raw)
         token = "%s %s" % ("Authorization", json.loads(token_raw.get_data())["token"])
-        result = pivportal.rest.app.test_client().post("/api/rest/request/auth", headers={'SSL_CLIENT_S_DN': 'test_dn1', "Authorization": token}, data=json.dumps({'username': 'testuser1', 'requestid': '1234567890123456', 'authorized': True, 'client_ip': None}), content_type='application/json')
+        result = pivportal.rest.app.test_client().post("/api/rest/request/auth", headers={'SSL_CLIENT_S_DN': 'test_dn1', "Authorization": token}, data=json.dumps({'username': 'testuser1', 'requestid': '1234567890123456', 'authorized': True, 'client_ip': "127.0.0.1"}), content_type='application/json')
         assert result.status_code == 200
 
     def test_token_required_invalidtoken(self):
         pivportal.security.dn_to_username = {'test_dn1': "testuser1"}
         token = "%s %s" % ("Authorization", "badtoken123")
-        result = pivportal.rest.app.test_client().post("/api/rest/request/auth", headers={'SSL_CLIENT_S_DN': 'test_dn1', "Authorization": token}, data=json.dumps({'username': 'testuser1', 'requestid': '1234567890123456', 'authorized': True, 'client_ip': None}), content_type='application/json')
+        result = pivportal.rest.app.test_client().post("/api/rest/request/auth", headers={'SSL_CLIENT_S_DN': 'test_dn1', "Authorization": token}, data=json.dumps({'username': 'testuser1', 'requestid': '1234567890123456', 'authorized': True, 'client_ip': "127.0.0.1"}), content_type='application/json')
         assert result.status_code == 401
 
     def test_valid_client_cert_required_missingclientdnheader(self):
@@ -155,7 +157,7 @@ class TestCli(unittest.TestCase):
         token_raw = pivportal.rest.app.test_client().post("/api/rest/user/login", headers={'SSL_CLIENT_S_DN': 'test_dn1'})
         print(token_raw)
         token = "%s %s" % ("Authorization", json.loads(token_raw.get_data())["token"])
-        result = pivportal.rest.app.test_client().post("/api/rest/request/auth", headers={"Authorization": token}, data=json.dumps({'username': 'testuser1', 'requestid': '1234567890123456', 'authorized': True, 'client_ip': None}), content_type='application/json')
+        result = pivportal.rest.app.test_client().post("/api/rest/request/auth", headers={"Authorization": token}, data=json.dumps({'username': 'testuser1', 'requestid': '1234567890123456', 'authorized': True, 'client_ip': "127.0.0.1"}), content_type='application/json')
         assert result.status_code == 401
 
     def test_valid_client_cert_required_notvaliduser(self):
