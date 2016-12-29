@@ -34,8 +34,7 @@ def requestid_is_valid(requestid):
 
 
 def ip_is_valid(ip):
-    if ip is None or re.match(r'^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$', ip):
-        # ip is None when testing
+    if re.match(r'^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$', ip):
         return True
     return False
 
