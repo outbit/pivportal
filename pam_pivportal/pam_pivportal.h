@@ -13,9 +13,11 @@
 
 #define PIVPORTAL_CONFIG_FILE "/etc/pivportal.conf"
 #define MAX_STR 255
+#define MAX_SERVERS 5
 
 
-extern char g_server_ip[MAX_STR];
+extern char g_server_ips[MAX_SERVERS][MAX_STR];
+extern char g_server_ips_len;
 extern char g_server_port[MAX_STR];
 extern char g_client_ssl_cert[MAX_STR];
 extern int g_server_ssl_verify_host;
