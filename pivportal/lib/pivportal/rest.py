@@ -7,8 +7,17 @@ import json
 import time
 import pivportal.security
 
+from flask_redis import FlaskRedis
 
-app = Flask(__name__)
+
+def create_app():
+    app = Flask(__name__)
+    redis_store = FlaskRedis()
+    redis_store.init_app(app)
+    return (app, redis_store)
+
+
+(app, redis_store) = create_app()
 app.secret_key = os.urandom(24)
 
 
@@ -36,17 +45,17 @@ def user_info():
 @pivportal.security.token_required(app.secret_key)
 @pivportal.security.valid_client_cert_required
 def request_list():
-
     request_list = []
-    count = 0
-    for item in pivportal.security.auth_requests:
-        if item["username"] == username:
-            if time.time() < item["time"]+pivportal.security.register_ticket_timeout:
-                request_list.append(item)
+    auth_requests = redis_store.hgetall("requests")
+    for requestid in auth_requests:
+        this_request = json.loads(auth_requests[requestid])
+        if this_request["username"] == username:
+            if time.time() < this_request["time"]+pivportal.security.register_ticket_timeout:
+                this_request["requestid"] = requestid # requestid needed for request_list
+                request_list.append(this_request)
             else:
                 # Request Expired
-                del pivportal.security.auth_requests[count]
-        count += 1
+                redis_store.hdel("requests", requestid)
 
     return Response(response=json.dumps(request_list), status=200, mimetype="application/json")
 
@@ -69,12 +78,13 @@ def request_auth():
         return Response(response=json.dumps({"response": "  invalid request"}), status=400, mimetype="application/json")
 
     # Authenticate Request
-    count = 0
-    for item in pivportal.security.auth_requests:
-        if item["username"] == username and item["requestid"] == requestid and item["client_ip"] == client_ip:
-            if item["authorized"] == False and authorized == True and time.time() < item["time"]+pivportal.security.register_ticket_timeout:
-                pivportal.security.auth_requests[count]["authorized"] = True
-        count += 1
+    auth_requests = redis_store.hgetall("requests")
+    if requestid in auth_requests:
+        this_request = json.loads(auth_requests[requestid])
+        if this_request["username"] == username and this_request["client_ip"] == client_ip:
+            if this_request["authorized"] == False and authorized == True and time.time() < this_request["time"]+pivportal.security.register_ticket_timeout:
+                this_request["authorized"] = True
+                redis_store.hmset("requests", {requestid: json.dumps(this_request)})
 
     return Response(response=json.dumps({"response": "success"}), status=200, mimetype="application/json")
 
@@ -89,10 +99,11 @@ def request_register():
         # client_ip is None when testing, so its ok
         return Response(response=json.dumps({"response": "  invalid request"}), status=400, mimetype="application/json")
 
-    if pivportal.security.is_duplicate_register(username, requestid, pivportal.security.auth_requests):
+    if pivportal.security.is_duplicate_register(username, requestid, redis_store.hgetall("requests")):
         return Response(response=json.dumps({"response": "  invalid request"}), status=400, mimetype="application/json")
 
-    pivportal.security.auth_requests.append({"username": username, "requestid": requestid, "client_ip": client_ip, "authorized": False, "time": time.time()})
+    this_request = {"username": username, "client_ip": client_ip, "authorized": False, "time": time.time()}
+    redis_store.hmset("requests", {requestid: json.dumps(this_request)})
 
     return Response(response=json.dumps({"response": "success"}), status=200, mimetype="application/json")
 
@@ -106,17 +117,16 @@ def request_status():
     if not pivportal.security.username_is_valid(username) or not pivportal.security.requestid_is_valid(requestid) or not pivportal.security.ip_is_valid(client_ip):
         return Response(response=json.dumps({"response": "  invalid request"}), status=400, mimetype="application/json")
 
-    count = 0
-    for item in pivportal.security.auth_requests:
-        if item["username"] == username and item["requestid"] == requestid and item["client_ip"] == client_ip:
-            if item["authorized"] == True:
+    auth_requests = redis_store.hgetall("requests")
+    if requestid in auth_requests:
+        this_request = json.loads(auth_requests[requestid])
+        if this_request["username"] == username and this_request["client_ip"] == client_ip:
+            if this_request["authorized"] == True:
                 # Success
-                del pivportal.security.auth_requests[count]
+                redis_store.hdel("requests", requestid)
                 return Response(response=json.dumps({"response": "success"}), status=200, mimetype="application/json")
             else:
                 # Delete auth_request, it failed anyway
-                del pivportal.security.auth_requests[count]
-            break
-        count += 1
+                redis_store.hdel("requests", requestid)
 
     return Response(response=json.dumps({"response": "Authentication Failure"}), status=401, mimetype="application/json")

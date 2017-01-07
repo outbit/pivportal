@@ -6,9 +6,8 @@ import jwt
 import datetime
 from functools import wraps
 
-
-# [{ "username": X, "requestid": X, "client_ip": X, "authorized": False, "time": time.time()},]
-auth_requests = []
+# Redis "requests" hash
+# {"12345678": { "username": X, "client_ip": X, "authorized": False, "time": time.time()}}
 
 # {"dn1": "user1", "dn2": "user2"}
 dn_to_username = {}
@@ -40,8 +39,9 @@ def ip_is_valid(ip):
 
 
 def is_duplicate_register(username, requestid, auth_requests):
-    for item in auth_requests:
-        if item["username"] == username and item["requestid"] == requestid:
+    if requestid in auth_requests:
+        this_request = json.loads(auth_requests[requestid])
+        if this_request["username"] == username:
             # Request Is Already Registered
             return True
     return False

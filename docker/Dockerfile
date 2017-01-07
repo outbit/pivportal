@@ -10,6 +10,7 @@ RUN apt-get update && apt-get install -y python \
   openssl \
   libssl-dev \
   apache2 \
+  redis-server \
   python-pip
 RUN pip install -U pip
 RUN pip install -U setuptools

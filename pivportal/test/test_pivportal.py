@@ -6,6 +6,17 @@ import pivportal.rest
 
 class TestCli(unittest.TestCase):
 
+    def setUp(self):
+        from flask_redis import FlaskRedis
+        from mockredis import MockRedis
+        class MockRedisWrapper(MockRedis):
+            '''A wrapper to add the `from_url` classmethod'''
+            @classmethod
+            def from_url(cls, *args, **kwargs):
+                return cls()
+        pivportal.rest.redis_store = FlaskRedis.from_custom_provider(MockRedisWrapper)
+        pivportal.rest.redis_store.init_app(pivportal.rest.app)
+
     def test_dn_is_valid_withinvalidchars(self):
         assert pivportal.security.dn_is_valid("%#DW;$%&*") == False
 
@@ -38,21 +49,21 @@ class TestCli(unittest.TestCase):
         username = "user1"
         requestid = "1234567890123456"
         authorized = False
-        auth_requests = [{ "username": username, "requestid": "2234567890123456", "authorized": authorized},]
+        auth_requests = {"2234567890123456": json.dumps({ "username": username, "authorized": authorized})}
         assert pivportal.security.is_duplicate_register(username, requestid, auth_requests) == False
 
     def test_is_duplicate_register_samerequestid(self):
         username = "user1"
         requestid = "1234567890123456"
         authorized = False
-        auth_requests = [{ "username": username, "requestid": requestid, "authorized": authorized},]
+        auth_requests = {requestid: json.dumps({ "username": username, "authorized": authorized})}
         assert pivportal.security.is_duplicate_register(username, requestid, auth_requests) == True
 
     def test_is_duplicate_register_exact(self):
         username = "user1"
         requestid = "1234567890123456"
         authorized = False
-        auth_requests = [{ "username": username, "requestid": requestid, "authorized": authorized},]
+        auth_requests = {requestid: json.dumps({ "username": username, "authorized": authorized})}
         assert pivportal.security.is_duplicate_register(username, requestid, auth_requests) == True
 
     def test_user_auth(self):

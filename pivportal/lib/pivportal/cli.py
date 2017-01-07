@@ -20,6 +20,10 @@ class Cli(object):
                               help="Listen IP Address",
                               metavar="LISTEN",
                               default=None)
+        parser.add_option("-r", "--redis", dest="redis",
+                              help="redis URL",
+                              metavar="REDIS",
+                              default=None)
         parser.add_option("-d", "--debug", dest="debug",
                               help="debug",
                               metavar="DEBUG",
@@ -27,6 +31,7 @@ class Cli(object):
         (options, args) = parser.parse_args()
         self.port = options.port
         self.listen = options.listen
+        self.redis_url = options.redis
         self.is_debug = options.debug
 
         # Set Defaults If Not Set On CLI
@@ -34,6 +39,8 @@ class Cli(object):
             self.port = "8088"
         if self.listen is None:
             self.listen = "127.0.0.1"
+        if self.redis_url is None:
+            self.redis_url = "redis://localhost:6379/0"
         if self.is_debug is None:
             self.is_debug = False
 
@@ -49,10 +56,14 @@ class Cli(object):
                 if "listen_address" in pivportal_conf:
                     if self.listen is None:
                         self.listen = str(pivportal_conf["listen_address"])
+                if "redis" in pivportal_conf:
+                    if self.redis_url is None:
+                        self.redis_url = str(pivportal_conf["redis"])
                 if "register_ticket_timeout" in pivportal_conf:
                     pivportal.security.register_ticket_timeout = int(pivportal_conf["register_ticket_timeout"])
 
 
     def run(self):
         """ EntryPoint Of Application """
+        pivportal.rest.app.config["REDIS_URL"] = self.redis_url
         pivportal.rest.app.run(threaded=True, host=self.listen, port=self.port, debug=self.is_debug)
