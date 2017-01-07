@@ -46,3 +46,7 @@
 .sconsign.dblite
 *.spec
 pam_pivportal/pam_pivportal-*/
+
+# 
+pivportal/build/
+pivportal/dist/
