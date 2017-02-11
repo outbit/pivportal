@@ -58,7 +58,7 @@ Example /etc/pivportal.conf:
 
 hosts - Hostname or IP Address of the server. Default is 127.0.0.1.
 
-port - TCP Port to user to connect to the server. Default is 442.
+port - TCP Port for pam_pivportal to authenticate to the server. Default is 442.
 
 client_ssl_cert - Client SSL certificate used by the pam_pivportal module to authenticate to the pivportal server. Default is /etc/ssl/certs/pivportalClient.pem.
 
