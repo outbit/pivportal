@@ -5,7 +5,7 @@ Secure Linux sudo access using a PIV (HSPD-12), CAC, SmartCard, or x509 Client C
 
 [![Build Status](https://secure.travis-ci.org/starboarder2001/pivportal.png?branch=master "ansible-docs latest build")](http://travis-ci.org/starboarder2001/pivportal)
 [![PIP Version](https://img.shields.io/pypi/v/pivportal.svg "ansible-docs PyPI version")](https://pypi.python.org/pypi/pivportal)
-[![Coverage Status](https://coveralls.io/repos/starboarder2001/pivportal/badge.svg?branch=develop&service=github)](https://coveralls.io/github/starboarder2001/pivportal?branc    h=develop)
+[![Coverage Status](https://coveralls.io/repos/starboarder2001/pivportal/badge.svg?branch=develop&service=github)](https://coveralls.io/github/starboarder2001/pivportal?branch=develop)
 [![Gitter IM](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/starboarder2001/pivportal)
 
 ![alt tag](https://raw.githubusercontent.com/starboarder2001/pivportal/images/pivportal_web.png)
