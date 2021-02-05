@@ -3,26 +3,26 @@ pivportal
 
 Secure Linux sudo access using a PIV (HSPD-12), CAC, SmartCard, or x509 Client Certificate.
 
-[![Build Status](https://secure.travis-ci.org/starboarder2001/pivportal.png?branch=master "ansible-docs latest build")](http://travis-ci.org/starboarder2001/pivportal)
+[![Build Status](https://secure.travis-ci.org/out-bit/pivportal.png?branch=master "ansible-docs latest build")](http://travis-ci.org/out-bit/pivportal)
 [![PIP Version](https://img.shields.io/pypi/v/pivportal.svg "ansible-docs PyPI version")](https://pypi.python.org/pypi/pivportal)
-[![Coverage Status](https://coveralls.io/repos/starboarder2001/pivportal/badge.svg?branch=develop&service=github)](https://coveralls.io/github/starboarder2001/pivportal?branc    h=develop)
-[![Gitter IM](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/starboarder2001/pivportal)
+[![Coverage Status](https://coveralls.io/repos/out-bit/pivportal/badge.svg?branch=develop&service=github)](https://coveralls.io/github/out-bit/pivportal?branch=develop)
+[![Gitter IM](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/outbit/pivportal)
 
-![alt tag](https://raw.githubusercontent.com/starboarder2001/pivportal/images/pivportal_web.png)
-![alt tag](https://raw.githubusercontent.com/starboarder2001/pivportal/images/pivportal_client.png)
+![alt tag](https://raw.githubusercontent.com/out-bit/pivportal/images/pivportal_web.png)
+![alt tag](https://raw.githubusercontent.com/out-bit/pivportal/images/pivportal_client.png)
 
 Installing pivportal Server
 ======
 
 ```bash
-$ docker pull starboarder2001/pivportal
+$ docker pull outbit/pivportal
 ```
 
 Configuring pivportal Server
 ======
 
 ```bash
-docker run -d -p 80:80 -p 442:442 -p 443:443 starboarder2001/pivportal
+docker run -d -p 80:80 -p 442:442 -p 443:443 outbit/pivportal
 ```
 
 In the running docker instance, **you are required to**:
@@ -58,7 +58,7 @@ Example /etc/pivportal.conf:
 
 hosts - Hostname or IP Address of the server. Default is 127.0.0.1.
 
-port - TCP Port to user to connect to the server. Default is 442.
+port - TCP Port for pam_pivportal to authenticate to the server. Default is 442.
 
 client_ssl_cert - Client SSL certificate used by the pam_pivportal module to authenticate to the pivportal server. Default is /etc/ssl/certs/pivportalClient.pem.
 
