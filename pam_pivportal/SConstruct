@@ -11,5 +11,5 @@ env.Package(
              SUMMARY        = 'pam_pivportal is a pam module for pivportal',
              DESCRIPTION    = 'pam_pivportal is a pam module for pivportal',
              X_RPM_GROUP    = 'Application/Security',
-             SOURCE_URL     = 'https://github.com/starboarder2001/pam_pivportal.tar.gz'
+             SOURCE_URL     = 'https://github.com/out-bit/pam_pivportal.tar.gz'
         )
