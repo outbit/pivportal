@@ -3,26 +3,26 @@ pivportal
 
 Secure Linux sudo access using a PIV (HSPD-12), CAC, SmartCard, or x509 Client Certificate.
 
-[![Build Status](https://secure.travis-ci.org/starboarder2001/pivportal.png?branch=master "ansible-docs latest build")](http://travis-ci.org/starboarder2001/pivportal)
+[![Build Status](https://secure.travis-ci.org/outbit/pivportal.png?branch=master "ansible-docs latest build")](http://travis-ci.org/outbit/pivportal)
 [![PIP Version](https://img.shields.io/pypi/v/pivportal.svg "ansible-docs PyPI version")](https://pypi.python.org/pypi/pivportal)
-[![Coverage Status](https://coveralls.io/repos/starboarder2001/pivportal/badge.svg?branch=develop&service=github)](https://coveralls.io/github/starboarder2001/pivportal?branch=develop)
-[![Gitter IM](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/starboarder2001/pivportal)
+[![Coverage Status](https://coveralls.io/repos/outbit/pivportal/badge.svg?branch=develop&service=github)](https://coveralls.io/github/outbit/pivportal?branch=develop)
+[![Gitter IM](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/outbit/pivportal)
 
-![alt tag](https://raw.githubusercontent.com/starboarder2001/pivportal/images/pivportal_web.png)
-![alt tag](https://raw.githubusercontent.com/starboarder2001/pivportal/images/pivportal_client.png)
+![alt tag](https://raw.githubusercontent.com/outbit/pivportal/images/pivportal_web.png)
+![alt tag](https://raw.githubusercontent.com/outbit/pivportal/images/pivportal_client.png)
 
 Installing pivportal Server
 ======
 
 ```bash
-$ docker pull starboarder2001/pivportal
+$ docker pull outbit/pivportal
 ```
 
 Configuring pivportal Server
 ======
 
 ```bash
-docker run -d -p 80:80 -p 442:442 -p 443:443 starboarder2001/pivportal
+docker run -d -p 80:80 -p 442:442 -p 443:443 outbit/pivportal
 ```
 
 In the running docker instance, **you are required to**:
