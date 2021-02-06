@@ -30,6 +30,7 @@ RUN chown root: /etc/apache2/sites-enabled/httpd-pivportal.conf && chmod 755 /et
 
 # SSL Server Cert
 RUN openssl req -new -nodes -x509 -subj "/C=US/ST=Oregon/L=Portland/O=IT/CN=testhost" -days 3650 -keyout /etc/ssl/private/pivportal.key -out /etc/ssl/private/pivportal.crt -extensions v3_ca || true
+COPY example_ca_cert/pivPortalCA.cer /etc/ssl/private/pivportalCA.crt
 RUN chown pivportal: /etc/ssl/private/pivportal* && chmod 440 /etc/ssl/private/pivportal*
 
 # Log file
