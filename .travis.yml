@@ -29,7 +29,7 @@ before_install:
 #    - sudo apt-get install libcurl4-gnutls-dev
 
 install:
-    - pip install nose flask flask-redis mockredispy coveralls PyYAML PyJWT
+    - pip install nose flask flask-redis fakeredis coveralls PyYAML PyJWT
 
 # Run Tests
 script:

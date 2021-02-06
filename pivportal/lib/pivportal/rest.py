@@ -12,7 +12,7 @@ from flask_redis import FlaskRedis
 
 def create_app():
     app = Flask(__name__)
-    redis_store = FlaskRedis()
+    redis_store = FlaskRedis(decode_responses=True)
     redis_store.init_app(app)
     return (app, redis_store)
 

@@ -7,15 +7,8 @@ import pivportal.rest
 class TestCli(unittest.TestCase):
 
     def setUp(self):
-        from flask_redis import FlaskRedis
-        from mockredis import MockRedis
-        class MockRedisWrapper(MockRedis):
-            '''A wrapper to add the `from_url` classmethod'''
-            @classmethod
-            def from_url(cls, *args, **kwargs):
-                return cls()
-        pivportal.rest.redis_store = FlaskRedis.from_custom_provider(MockRedisWrapper)
-        pivportal.rest.redis_store.init_app(pivportal.rest.app)
+        import fakeredis
+        pivportal.rest.redis_store = fakeredis.FakeRedis(decode_responses=True)
 
     def test_dn_is_valid_withinvalidchars(self):
         assert pivportal.security.dn_is_valid("%#DW;$%&*") == False
