@@ -75,9 +75,9 @@ def token_required(secret_key):
                 return Response(response="Missing authorization header", status=401)
             try:
                 payload = parse_token(request.headers.get('Authorization').split()[1], secret_key)
-            except jwt.DecodeError:
+            except jwt.exceptions.DecodeError:
                 return Response(response="Token is invalid", status=401)
-            except jwt.ExpiredSignatureError:
+            except jwt.exceptions.ExpiredSignatureError:
                 return Response(response="Token has expired", status=401)
 
             # Set username for decorated func
