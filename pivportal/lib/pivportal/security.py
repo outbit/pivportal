@@ -69,7 +69,7 @@ def token_required(secret_key):
     def token_required_decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
-            g = f.func_globals
+            g = f.__globals__
 
             if not request.headers.get('Authorization'):
                 return Response(response="Missing authorization header", status=401)
@@ -91,7 +91,7 @@ def token_required(secret_key):
 def valid_client_cert_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        g = f.func_globals
+        g = f.__globals__
 
         if not request.headers.get('SSL_CLIENT_S_DN'):
             return Response(response="Missing Client DN Header", status=401)
