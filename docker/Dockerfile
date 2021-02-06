@@ -2,24 +2,23 @@ FROM debian:stable
 MAINTAINER David Whiteside <david@davidwhiteside.com>
 
 # pivportal-api dependencies
-RUN apt-get update && apt-get install -y python \
-  python-setuptools \
-  python-dev \
+RUN apt-get update && apt-get install -y python3.7 \
+  python3-pip \
+  python3.7-dev \
   build-essential \
   libffi-dev \
   openssl \
   libssl-dev \
   apache2 \
-  redis-server \
-  python-pip
-RUN pip install -U pip
-RUN pip install -U setuptools
+  redis-server
+RUN python3.7 -m pip install -U pip
+RUN python3.7 -m pip install -U setuptools
 
 # pivportal application user and group
 RUN groupadd -r pivportal && useradd -r -g pivportal pivportal
 
 # pivportal-api install latest stable
-RUN pip install -U pivportal
+RUN python3.7 -m pip install -U pivportal
 
 # Apache
 RUN a2enmod ssl
