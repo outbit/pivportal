@@ -27,12 +27,12 @@ before_install:
 #    - sudo apt-get install libcurl4-gnutls-dev
 
 install:
-    - pip install nose flask flask-redis fakeredis coveralls PyYAML PyJWT
+    - pip install flask flask-redis fakeredis PyYAML PyJWT
 
 # Run Tests
 script:
     - 'export PYTHONPATH="${PYTHONPATH}:./pivportal/lib"'
-    - "coverage run --source=pivportal $(which nosetests) -w pivportal/test/"
+    - "python -m unittest discover -s pivportal/test/"
     - "cd pam_pivportal/"
     - "make clean && make"
     - "make clean && make test"
