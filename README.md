@@ -3,10 +3,8 @@ pivportal
 
 Secure Linux sudo access using a PIV (HSPD-12), CAC, SmartCard, or x509 Client Certificate.
 
-[![Build Status](https://secure.travis-ci.org/outbit/pivportal.png?branch=master "ansible-docs latest build")](http://travis-ci.org/outbit/pivportal)
+[![Tests](https://github.com/outbit/pivportal/actions/workflows/tests.yml/badge.svg)](https://github.com/outbit/pivportal/actions/workflows/tests.yml)
 [![PIP Version](https://img.shields.io/pypi/v/pivportal.svg "ansible-docs PyPI version")](https://pypi.python.org/pypi/pivportal)
-[![Coverage Status](https://coveralls.io/repos/outbit/pivportal/badge.svg?branch=develop&service=github)](https://coveralls.io/github/outbit/pivportal?branch=develop)
-[![Gitter IM](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/outbit/pivportal)
 
 ![alt tag](https://raw.githubusercontent.com/outbit/pivportal/images/pivportal_web.png)
 ![alt tag](https://raw.githubusercontent.com/outbit/pivportal/images/pivportal_client.png)
@@ -82,3 +80,4 @@ Author
 ======
 
 David Whiteside (<david@davidwhiteside.com>)
+
